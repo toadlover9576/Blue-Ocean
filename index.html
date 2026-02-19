@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse — The Invisible Made Visible</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #050505;
+    --white: #f5f2ec;
+    --blue: #00c8ff;
+    --blue-dim: rgba(0,200,255,0.15);
+    --blue-glow: rgba(0,200,255,0.4);
+    --red: #ff3a3a;
+    --amber: #ffb800;
+    --mono: 'DM Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --serif: 'Playfair Display', serif;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--mono);
+    overflow: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  #cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: var(--blue);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+
+  /* Main container */
+  #deck {
+    position: relative;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Slides */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Nav */
+  #nav {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+    align-items: center;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(245,242,236,0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .dot.active { background: var(--blue); width: 24px; border-radius: 3px; }
+
+  #arrow-left, #arrow-right {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px; height: 48px;
+    border: 1px solid rgba(245,242,236,0.15);
+    background: rgba(5,5,5,0.6);
+    color: var(--white);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    transition: all 0.25s;
+    backdrop-filter: blur(8px);
+  }
+  #arrow-left { left: 1.5rem; }
+  #arrow-right { right: 1.5rem; }
+  #arrow-left:hover, #arrow-right:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  #slide-counter {
+    position: fixed;
+    top: 2rem; right: 2rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: rgba(245,242,236,0.35);
+    letter-spacing: 0.15em;
+    z-index: 100;
+  }
+
+  /* ===================== SLIDE 1 ===================== */
+  #s1 { background: var(--black); }
+  .s1-inner { text-align: center; position: relative; }
+  .s1-bottle {
+    width: 80px; height: 200px;
+    margin: 0 auto 3rem;
+    position: relative;
+  }
+  .bottle-svg { width: 100%; height: 100%; }
+  .bottle-light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 35% 20%, rgba(0,200,255,0.3) 0%, transparent 60%);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  .s1-num {
+    font-family: var(--display);
+    font-size: clamp(5rem, 14vw, 11rem);
+    color: var(--white);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+  }
+  .s1-num span { color: var(--blue); }
+  .s1-sub {
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: rgba(245,242,236,0.5);
+    margin-top: 1rem;
+    text-transform: uppercase;
+  }
+  .s1-invisible {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    color: rgba(245,242,236,0.2);
+    margin-top: 2rem;
+    animation: flicker 4s ease-in-out infinite;
+  }
+  @keyframes flicker {
+    0%,100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+    55% { opacity: 0.1; }
+    60% { opacity: 0.6; }
+  }
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    animation: scan 6s linear infinite;
+    opacity: 0.4;
+  }
+  @keyframes scan {
+    0% { top: 0%; }
+    100% { top: 100%; }
+  }
+
+  /* ===================== SLIDE 2 ===================== */
+  #s2 { background: #080808; }
+  .s2-inner { width: 90%; max-width: 900px; }
+  .shake-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  .s2-bottle-wrap {
+    position: relative; flex-shrink: 0;
+  }
+  .s2-bottle {
+    width: 60px; height: 160px;
+    position: relative;
+  }
+  .s2-bottle-shake {
+    animation: shakeBottle 0.5s ease-in-out infinite;
+  }
+  @keyframes shakeBottle {
+    0%,100% { transform: rotate(0deg); }
+    25% { transform: rotate(-12deg); }
+    75% { transform: rotate(12deg); }
+  }
+  .shake-label {
+    font-family: var(--display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.9;
+    color: var(--white);
+  }
+  .shake-label .action { color: var(--blue); }
+  .waste-bar-container { margin-top: 2rem; }
+  .waste-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(245,242,236,0.4);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .waste-bar-track {
+    width: 100%;
+    height: 40px;
+    background: rgba(245,242,236,0.06);
+    border: 1px solid rgba(245,242,236,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .waste-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 80%;
+    background: rgba(245,242,236,0.15);
+    display: flex; align-items: center; padding-left: 1rem;
+    font-size: 0.8rem; color: rgba(245,242,236,0.5);
+    letter-spacing: 0.1em;
+  }
+  .waste-bar-waste {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 20%;
+    background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display);
+    font-size: 1.4rem;
+    color: white;
+    animation: pulseRed 2s ease-in-out infinite;
+  }
+  @keyframes pulseRed {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .waste-bar-pct-label {
+    position: absolute;
+    right: 0;
+    top: -1.5rem;
+    font-size: 0.7rem;
+    color: var(--red);
+    letter-spacing: 0.15em;
+  }
+
+  /* ===================== SLIDE 3 ===================== */
+  #s3 { background: var(--black); }
+  .s3-inner { width: 90%; max-width: 1000px; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .stat-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    border-bottom: 1px solid rgba(245,242,236,0.08);
+    padding-bottom: 2rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .stat-row.revealed { opacity: 1; transform: translateX(0); }
+  .stat-number {
+    font-family: var(--display);
+    font-size: clamp(4rem, 9vw, 8rem);
+    color: var(--blue);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 280px;
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: rgba(245,242,236,0.55);
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .stat-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.3);
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  /* ===================== SLIDE 4 ===================== */
+  #s4 { background: #060606; }
+  .s4-inner { width: 90%; max-width: 1000px; }
+  .s4-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: 0.05em;
+    color: rgba(245,242,236,0.3);
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+  }
+  .compare-table {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr;
+    gap: 0;
+    border: 1px solid rgba(245,242,236,0.1);
+  }
+  .ct-cell {
+    padding: 1.2rem 1.5rem;
+    border-right: 1px solid rgba(245,242,236,0.08);
+    border-bottom: 1px solid rgba(245,242,236,0.08);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    transition: background 0.3s;
+  }
+  .ct-cell:last-child { border-right: none; }
+  .ct-header {
+    font-family: var(--display);
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    background: rgba(245,242,236,0.04);
+  }
+  .ct-header.industrial { color: rgba(245,242,236,0.4); }
+  .ct-header.smart { color: rgba(245,242,236,0.4); }
+  .ct-header.manual { color: rgba(245,242,236,0.4); }
+  .ct-row-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+    background: rgba(245,242,236,0.02);
+    display: flex; align-items: center;
+  }
+  .bad { color: var(--red); }
+  .ok { color: var(--amber); }
+  .good { color: #00e676; }
+  .ct-none {
+    border-right: none;
+  }
+  .none-cell { border-right: none; }
+
+  /* ===================== SLIDE 5 ===================== */
+  #s5 { background: var(--black); }
+  .s5-inner { text-align: center; }
+  .question-block {
+    margin-bottom: 2rem;
+  }
+  .q-line {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    letter-spacing: 0.03em;
+    color: var(--white);
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .q-line.revealed { opacity: 1; transform: translateY(0); }
+  .q-line .hl { color: var(--blue); }
+  .s5-answer {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: rgba(245,242,236,0.4);
+    margin-top: 3rem;
+    opacity: 0;
+    transition: opacity 0.8s 1.2s;
+  }
+  .s5-answer.revealed { opacity: 1; }
+  .pulse-reveal {
+    font-family: var(--display);
+    font-size: clamp(5rem, 15vw, 14rem);
+    color: var(--blue);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s 0.5s cubic-bezier(0.16,1,0.3,1);
+    text-shadow: 0 0 80px rgba(0,200,255,0.5);
+  }
+  .pulse-reveal.revealed { opacity: 1; transform: scale(1); }
+
+  /* ===================== SLIDE 6 ===================== */
+  #s6 { background: #050810; }
+  .s6-inner {
+    width: 90%; max-width: 1000px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .s6-visual { position: relative; }
+  .bottle-diagram {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    display: block;
+  }
+  .pressure-wave {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2px;
+    background: var(--blue);
+    animation: wave 2s ease-in-out infinite;
+    box-shadow: 0 0 20px var(--blue);
+  }
+  @keyframes wave {
+    0%,100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+    50% { transform: translateX(-50%) scaleX(0.3); opacity: 0.4; }
+  }
+  .pressure-particles {
+    position: absolute;
+    bottom: 15%; left: 50%;
+    transform: translateX(-50%);
+  }
+  .pp {
+    position: absolute;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--blue);
+    animation: float-up 2s ease-out infinite;
+  }
+  .pp:nth-child(1) { left: -20px; animation-delay: 0s; }
+  .pp:nth-child(2) { left: 0; animation-delay: 0.4s; }
+  .pp:nth-child(3) { left: 20px; animation-delay: 0.8s; }
+  @keyframes float-up {
+    0% { transform: translateY(0); opacity: 0.8; }
+    100% { transform: translateY(-60px); opacity: 0; }
+  }
+  .s6-text { }
+  .s6-title {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  .formula-box {
+    background: var(--blue-dim);
+    border: 1px solid var(--blue-glow);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    display: inline-block;
+    text-align: center;
+  }
+  .formula {
+    font-family: var(--display);
+    font-size: 3.5rem;
+    color: var(--blue);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 30px var(--blue-glow);
+  }
+  .formula-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(0,200,255,0.6);
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+  .s6-desc {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.5);
+  }
+  .s6-desc strong { color: var(--white); font-weight: 400; }
+
+  /* ===================== SLIDE 7 ===================== */
+  #s7 { background: var(--black); }
+  .s7-inner { width: 90%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .s7-left { }
+  .s7-title {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+  .chip-visual {
+    width: 140px; height: 140px;
+    border: 1px solid rgba(0,200,255,0.3);
+    position: relative;
+    margin: 2rem 0;
+    background: rgba(0,200,255,0.03);
+  }
+  .chip-inner {
+    position: absolute;
+    inset: 20px;
+    border: 1px solid rgba(0,200,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chip-dot {
+    width: 20px; height: 20px;
+    background: var(--blue);
+    animation: chipPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 20px var(--blue);
+  }
+  @keyframes chipPulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+  .chip-legs {
+    position: absolute;
+  }
+  .chip-legs.top { top: -8px; left: 20px; right: 20px; height: 8px; display: flex; gap: 10px; }
+  .chip-legs.bottom { bottom: -8px; left: 20px; right: 20px; height: 8px; display: flex; gap: 10px; }
+  .chip-legs.left { left: -8px; top: 20px; bottom: 20px; width: 8px; display: flex; flex-direction: column; gap: 10px; }
+  .chip-legs.right { right: -8px; top: 20px; bottom: 20px; width: 8px; display: flex; flex-direction: column; gap: 10px; }
+  .leg { flex: 1; background: rgba(0,200,255,0.4); }
+  .price-drop {
+    margin-top: 1rem;
+  }
+  .price-drop-track {
+    width: 100%;
+    height: 60px;
+    position: relative;
+  }
+  .price-line {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(245,242,236,0.1);
+  }
+  .price-curve {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+  .price-curve svg { width: 100%; height: 100%; }
+  .s7-uses {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .use-tag {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(245,242,236,0.15);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+  }
+  .s7-right { }
+  .big-price {
+    font-family: var(--display);
+    font-size: clamp(4rem, 10vw, 9rem);
+    color: var(--blue);
+    line-height: 0.9;
+    text-shadow: 0 0 60px rgba(0,200,255,0.4);
+  }
+  .big-price .cents { font-size: 0.5em; color: rgba(0,200,255,0.6); }
+  .price-context {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.3);
+    margin-top: 0.5rem;
+  }
+  .price-bar {
+    margin-top: 2rem;
+    height: 4px;
+    background: rgba(245,242,236,0.06);
+    position: relative;
+    overflow: visible;
+  }
+  .price-bar-fill {
+    height: 100%;
+    width: 16%;
+    background: var(--blue);
+    box-shadow: 0 0 10px var(--blue);
+    position: relative;
+  }
+  .price-compare {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+    color: rgba(245,242,236,0.3);
+    letter-spacing: 0.1em;
+  }
+  .price-compare .ours { color: var(--blue); }
+
+  /* ===================== SLIDE 8 ===================== */
+  #s8 { background: #050505; }
+  .s8-inner { width: 90%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .ring-visual {
+    width: 240px; height: 240px;
+    margin: 0 auto;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ring-outer {
+    width: 200px; height: 60px;
+    border: 3px solid var(--blue);
+    border-radius: 30px;
+    position: relative;
+    animation: ringBreath 3s ease-in-out infinite;
+    box-shadow: 0 0 30px var(--blue-glow), inset 0 0 20px rgba(0,200,255,0.1);
+  }
+  @keyframes ringBreath {
+    0%,100% { box-shadow: 0 0 20px var(--blue-glow), inset 0 0 15px rgba(0,200,255,0.1); }
+    50% { box-shadow: 0 0 50px var(--blue-glow), inset 0 0 30px rgba(0,200,255,0.2); }
+  }
+  .ring-inner {
+    position: absolute;
+    inset: 8px;
+    border-radius: 22px;
+    background: rgba(0,200,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ring-text {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    color: var(--blue);
+    letter-spacing: 0.2em;
+  }
+  .ring-orbits {
+    position: absolute;
+    inset: 0;
+  }
+  .orbit-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 10px var(--blue);
+  }
+  .orbit-dot:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+  .orbit-dot:nth-child(2) { bottom: 10px; left: 50%; transform: translateX(-50%); }
+  .s8-specs { }
+  .s8-title {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  .spec-list { }
+  .spec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(245,242,236,0.06);
+  }
+  .spec-icon {
+    width: 32px; height: 32px;
+    border: 1px solid var(--blue-glow);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--blue);
+    font-size: 0.8rem;
+  }
+  .spec-content { }
+  .spec-title { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); margin-bottom: 0.2rem; }
+  .spec-desc { font-size: 0.75rem; color: rgba(245,242,236,0.4); line-height: 1.5; }
+
+  /* ===================== SLIDE 9 ===================== */
+  #s9 { background: var(--black); }
+  .s9-inner { width: 90%; max-width: 900px; text-align: center; }
+  .phone-container {
+    width: 200px;
+    height: 380px;
+    border: 2px solid rgba(245,242,236,0.15);
+    border-radius: 24px;
+    margin: 0 auto 3rem;
+    padding: 1rem;
+    position: relative;
+    background: rgba(245,242,236,0.02);
+    overflow: hidden;
+  }
+  .phone-notch {
+    width: 60px; height: 12px;
+    background: rgba(245,242,236,0.1);
+    border-radius: 6px;
+    margin: 0 auto 1rem;
+  }
+  .phone-screen {
+    width: 100%; height: calc(100% - 28px);
+    background: #0a0a0a;
+    border-radius: 8px;
+    padding: 0.75rem;
+    overflow: hidden;
+  }
+  .scan-animation {
+    width: 100%;
+    background: rgba(0,200,255,0.08);
+    border-radius: 4px;
+    height: 80px;
+    position: relative;
+    margin-bottom: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(0,200,255,0.2);
+  }
+  .scan-bar {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
+    animation: scanDown 2s linear infinite;
+  }
+  @keyframes scanDown {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+  .barcode-lines {
+    display: flex; gap: 2px; height: 40px; align-items: center;
+  }
+  .bc-line { height: 100%; background: rgba(245,242,236,0.3); }
+  .bc-line:nth-child(odd) { width: 3px; }
+  .bc-line:nth-child(even) { width: 1px; }
+  .scan-step {
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: rgba(0,200,255,0.8);
+    margin: 0.4rem 0;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .db-match {
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 3px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.5rem;
+    color: #00e676;
+    margin-top: 0.3rem;
+    letter-spacing: 0.1em;
+  }
+  .s9-steps {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 1rem;
+  }
+  .step-item { text-align: center; }
+  .step-num {
+    font-family: var(--display);
+    font-size: 3rem;
+    color: var(--blue);
+    line-height: 1;
+  }
+  .step-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    margin-top: 0.3rem;
+  }
+  .s9-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+
+  /* ===================== SLIDE 10 ===================== */
+  #s10 { background: #04080a; }
+  .s10-inner { width: 90%; max-width: 1000px; }
+  .s10-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--white);
+    margin-bottom: 3rem;
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .dash-card {
+    border: 1px solid rgba(245,242,236,0.08);
+    padding: 1.2rem;
+    background: rgba(245,242,236,0.02);
+    position: relative;
+    overflow: hidden;
+  }
+  .dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .dash-card.high::before { background: #00e676; }
+  .dash-card.mid::before { background: var(--amber); }
+  .dash-card.low::before { background: var(--red); }
+  .dash-product {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    margin-bottom: 0.5rem;
+  }
+  .dash-pct {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .dash-pct.high { color: #00e676; }
+  .dash-pct.mid { color: var(--amber); }
+  .dash-pct.low { color: var(--red); }
+  .dash-bar-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(245,242,236,0.08);
+  }
+  .dash-bar-fill {
+    height: 100%;
+    transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .dash-bar-fill.high { background: #00e676; }
+  .dash-bar-fill.mid { background: var(--amber); }
+  .dash-bar-fill.low { background: var(--red); }
+  .alert-row {
+    border: 1px solid rgba(255,58,58,0.3);
+    background: rgba(255,58,58,0.05);
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: alertPulse 2s ease-in-out infinite;
+  }
+  @keyframes alertPulse {
+    0%,100% { border-color: rgba(255,58,58,0.3); }
+    50% { border-color: rgba(255,58,58,0.7); }
+  }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: dotBlink 1s ease-in-out infinite; }
+  @keyframes dotBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+  .alert-text { font-size: 0.75rem; color: rgba(245,242,236,0.6); letter-spacing: 0.05em; }
+  .alert-text strong { color: var(--red); }
+
+  /* ===================== SLIDE 11 ===================== */
+  #s11 { background: var(--black); }
+  .s11-inner { text-align: center; }
+  .s11-title {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--white);
+    margin-bottom: 3rem;
+    line-height: 0.95;
+  }
+  .s11-title span { color: var(--blue); }
+  .lifecycle-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+  }
+  .life-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .life-icon {
+    width: 80px; height: 120px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .life-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+  }
+  .life-arrow {
+    font-size: 2rem;
+    color: var(--blue);
+    margin: 0 1rem;
+    opacity: 0.5;
+    flex-shrink: 0;
+    align-self: center;
+    margin-bottom: 2rem;
+  }
+  .s11-stats {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    margin-top: 3rem;
+  }
+  .s11-stat { text-align: center; }
+  .s11-stat-num {
+    font-family: var(--display);
+    font-size: 3.5rem;
+    color: var(--blue);
+  }
+  .s11-stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+    margin-top: 0.3rem;
+  }
+
+  /* ===================== SLIDE 12 ===================== */
+  #s12 { background: #040408; }
+  .s12-inner { width: 90%; max-width: 900px; }
+  .s12-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: rgba(245,242,236,0.25);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .errc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid rgba(245,242,236,0.1);
+  }
+  .errc-quad {
+    padding: 2rem 2.5rem;
+    border: 1px solid rgba(245,242,236,0.05);
+    position: relative;
+    min-height: 160px;
+  }
+  .errc-quad:hover { background: rgba(245,242,236,0.02); }
+  .errc-header {
+    font-family: var(--display);
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .errc-header.eliminate { color: var(--red); }
+  .errc-header.raise { color: #00e676; }
+  .errc-header.reduce { color: var(--amber); }
+  .errc-header.create { color: var(--blue); }
+  .errc-item {
+    font-size: 0.8rem;
+    color: rgba(245,242,236,0.5);
+    margin: 0.4rem 0;
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .errc-item::before { content: '→'; color: rgba(245,242,236,0.2); font-size: 0.7rem; }
+
+  /* ===================== SLIDE 13 ===================== */
+  #s13 { background: var(--black); }
+  .s13-inner { width: 90%; max-width: 1000px; }
+  .s13-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: var(--white);
+    margin-bottom: 2.5rem;
+  }
+  .validation-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .val-tier {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 0;
+    border: 1px solid rgba(245,242,236,0.08);
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+    transition: background 0.3s;
+    align-items: center;
+  }
+  .val-tier:last-child { border-bottom: 1px solid rgba(245,242,236,0.08); }
+  .val-tier:hover { background: rgba(245,242,236,0.02); }
+  .tier-label {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+  .tier-label.consumer { color: var(--white); }
+  .tier-label.business { color: var(--blue); }
+  .tier-label.data { color: var(--amber); }
+  .tier-proof {
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.4);
+    line-height: 1.6;
+    padding: 0 1.5rem;
+  }
+  .tier-stat {
+    text-align: right;
+  }
+  .tier-big-num {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  .tier-big-num.consumer { color: var(--white); }
+  .tier-big-num.business { color: var(--blue); }
+  .tier-big-num.data { color: var(--amber); }
+  .tier-big-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.3);
+  }
+
+  /* ===================== SLIDE 14 ===================== */
+  #s14 { background: #050505; }
+  .s14-inner { width: 90%; max-width: 900px; text-align: center; }
+  .s14-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: var(--white);
+    margin-bottom: 3rem;
+  }
+  .unit-econ {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 3rem;
+  }
+  .ue-col {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    border: 1px solid rgba(245,242,236,0.08);
+    border-right: none;
+    position: relative;
+  }
+  .ue-col:last-child { border-right: 1px solid rgba(245,242,236,0.08); }
+  .ue-col::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .ue-col.bom::before { background: rgba(245,242,236,0.2); }
+  .ue-col.retail::before { background: var(--blue); }
+  .ue-col.margin::before { background: #00e676; }
+  .ue-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+    margin-bottom: 0.75rem;
+  }
+  .ue-value {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
+  }
+  .ue-value.bom { color: rgba(245,242,236,0.6); }
+  .ue-value.retail { color: var(--blue); text-shadow: 0 0 40px var(--blue-glow); }
+  .ue-value.margin { color: #00e676; }
+  .ue-source {
+    font-size: 0.6rem;
+    color: rgba(245,242,236,0.2);
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .margin-viz {
+    width: 100%;
+    height: 8px;
+    background: rgba(245,242,236,0.08);
+    position: relative;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .margin-fill {
+    height: 100%;
+    width: 81%;
+    background: linear-gradient(90deg, #00e676, rgba(0,230,118,0.5));
+    position: relative;
+  }
+  .margin-fill::after {
+    content: '81% GROSS MARGIN';
+    position: absolute;
+    right: 0;
+    top: 12px;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: #00e676;
+    white-space: nowrap;
+  }
+
+  /* ===================== SLIDE 15 ===================== */
+  #s15 { background: var(--black); }
+  .s15-inner { width: 90%; max-width: 1000px; }
+  .s15-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: rgba(245,242,236,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+  }
+  .why-now-forces {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+  }
+  .force-card {
+    padding: 2.5rem 2rem;
+    background: rgba(245,242,236,0.02);
+    position: relative;
+    overflow: hidden;
+  }
+  .force-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(0,200,255,0.08) 0%, transparent 70%);
+  }
+  .force-num {
+    font-family: var(--display);
+    font-size: 6rem;
+    color: rgba(0,200,255,0.1);
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    line-height: 1;
+  }
+  .force-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .force-title {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    position: relative; z-index: 1;
+  }
+  .force-desc {
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.4);
+    line-height: 1.7;
+    position: relative; z-index: 1;
+  }
+  .force-desc strong { color: var(--blue); font-weight: 400; }
+  .force-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(0,200,255,0.3);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+    position: relative; z-index: 1;
+  }
+
+  /* ===================== SLIDE 16 ===================== */
+  #s16 { background: #040408; }
+  .s16-inner { width: 90%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+  .s16-col-title {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+  .s16-col-title.now { color: rgba(245,242,236,0.5); }
+  .s16-col-title.next { color: var(--blue); }
+  .status-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(245,242,236,0.05);
+  }
+  .status-check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+  }
+  .status-check.done { background: rgba(0,230,118,0.2); color: #00e676; border: 1px solid #00e676; }
+  .status-check.pending { background: rgba(0,200,255,0.1); color: var(--blue); border: 1px solid var(--blue); }
+  .status-text { font-size: 0.8rem; color: rgba(245,242,236,0.55); line-height: 1.5; }
+  .status-text strong { color: var(--white); font-weight: 400; }
+  .timeline-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(245,242,236,0.06);
+    margin-top: 2rem;
+    position: relative;
+  }
+  .timeline-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), rgba(0,200,255,0.3));
+    animation: timeFill 2s 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes timeFill {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  .timeline-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.6rem;
+    color: rgba(245,242,236,0.25);
+    letter-spacing: 0.1em;
+  }
+
+  /* ===================== SLIDE 17 ===================== */
+  #s17 { background: var(--black); overflow: hidden; }
+  .s17-inner { text-align: center; position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  .earth-zoom {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,200,255,0.05) 0%, transparent 60%);
+    animation: earthGlow 4s ease-in-out infinite;
+  }
+  @keyframes earthGlow {
+    0%,100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  .s17-sup {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.3);
+    margin-bottom: 2rem;
+  }
+  .s17-main {
+    font-family: var(--display);
+    font-size: clamp(4rem, 12vw, 11rem);
+    line-height: 0.9;
+    color: var(--white);
+    position: relative; z-index: 1;
+  }
+  .s17-main .strike {
+    position: relative;
+    color: rgba(245,242,236,0.3);
+  }
+  .s17-main .strike::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 3px;
+    background: var(--red);
+  }
+  .s17-main .visible { color: var(--blue); text-shadow: 0 0 80px rgba(0,200,255,0.6); }
+  .s17-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: rgba(245,242,236,0.4);
+    margin-top: 3rem;
+    position: relative; z-index: 1;
+  }
+  .s17-brand {
+    font-family: var(--display);
+    font-size: 5rem;
+    color: var(--blue);
+    letter-spacing: 0.3em;
+    margin-top: 2rem;
+    position: relative; z-index: 1;
+    text-shadow: 0 0 60px rgba(0,200,255,0.5);
+  }
+  .pulse-ring {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,200,255,0.2);
+    animation: pulsate 3s ease-out infinite;
+  }
+  .pulse-ring:nth-child(2) { animation-delay: 1s; }
+  .pulse-ring:nth-child(3) { animation-delay: 2s; }
+  @keyframes pulsate {
+    0% { transform: scale(0.5); opacity: 0.8; }
+    100% { transform: scale(4); opacity: 0; }
+  }
+
+  /* ===================== TRANSITIONS ===================== */
+  .slide { clip-path: inset(0 100% 0 0); }
+  .slide.active { clip-path: inset(0 0% 0 0); transition: clip-path 0.7s cubic-bezier(0.77,0,0.175,1); }
+  .slide.exit { clip-path: inset(0 0% 0 100%); transition: clip-path 0.7s cubic-bezier(0.77,0,0.175,1); }
+
+  /* Background noise grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.5;
+  }
+
+  .slide-label {
+    position: fixed;
+    top: 2rem; left: 2rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.2);
+    z-index: 100;
+    font-family: var(--mono);
+  }
+  .slide-label span { color: rgba(0,200,255,0.5); }
+
+  /* Progress bar */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
+    z-index: 200;
+    transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="progress"></div>
+<div id="slide-label" class="slide-label">PULSE / <span id="slide-name">INTRO</span></div>
+<div id="slide-counter">01 / 17</div>
+
+<button id="arrow-left">←</button>
+<button id="arrow-right">→</button>
+
+<div id="deck">
+
+  <!-- SLIDE 1: THE NUMBER -->
+  <div class="slide active" id="s1" data-name="THE INVISIBLE">
+    <div class="scan-line"></div>
+    <div class="s1-inner">
+      <div class="s1-bottle">
+        <svg class="bottle-svg" viewBox="0 0 80 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="25" y="0" width="30" height="20" rx="4" fill="rgba(245,242,236,0.08)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
+          <path d="M15 30 Q10 40 10 60 L10 185 Q10 195 20 195 L60 195 Q70 195 70 185 L70 60 Q70 40 65 30 Z" fill="rgba(245,242,236,0.04)" stroke="rgba(245,242,236,0.15)" stroke-width="1"/>
+          <path d="M10 120 L70 120" stroke="rgba(0,200,255,0.3)" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M15 30 Q10 40 10 60 L10 120 Q10 60 15 50 Z" fill="rgba(245,242,236,0.03)"/>
+          <ellipse cx="40" cy="120" rx="30" ry="5" fill="rgba(0,200,255,0.1)"/>
+        </svg>
+        <div class="bottle-light"></div>
+      </div>
+      <div class="s1-num"><span>7</span> BILLION</div>
+      <div class="s1-sub">bottles — right now — invisible</div>
+      <div class="s1-invisible">you can't see inside any of them</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: THE WASTE -->
+  <div class="slide" id="s2" data-name="THE WASTE">
+    <div class="s2-inner">
+      <div class="shake-row">
+        <div class="s2-bottle-wrap">
+          <div class="s2-bottle s2-bottle-shake">
+            <svg viewBox="0 0 60 160" fill="none" xmlns="http://www.w3.org/2000/svg" width="60" height="160">
+              <rect x="18" y="0" width="24" height="18" rx="3" fill="rgba(245,242,236,0.1)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
+              <path d="M8 25 Q5 35 5 50 L5 148 Q5 155 15 155 L45 155 Q55 155 55 148 L55 50 Q55 35 52 25 Z" fill="rgba(245,242,236,0.05)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
+              <path d="M5 100 L55 100 L55 148 Q55 155 45 155 L15 155 Q5 155 5 148 Z" fill="rgba(255,58,58,0.15)"/>
+              <text x="30" y="130" text-anchor="middle" fill="rgba(255,58,58,0.6)" font-size="8" font-family="DM Mono">20%</text>
+              <text x="30" y="142" text-anchor="middle" fill="rgba(255,58,58,0.4)" font-size="5" font-family="DM Mono">LEFT</text>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="shake-label">
+            <span class="action">SHAKE</span><br>
+            TILT<br>
+            GUESS<br>
+            <span style="color:rgba(255,58,58,0.7)">WASTE</span>
+          </div>
+        </div>
+      </div>
+      <div class="waste-bar-container">
+        <div class="waste-bar-label">average bottle at disposal</div>
+        <div class="waste-bar-track">
+          <div class="waste-bar-fill">product used</div>
+          <div class="waste-bar-waste">20%</div>
+          <div class="waste-bar-pct-label">WASTED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: THE STATS -->
+  <div class="slide" id="s3" data-name="THE SCALE">
+    <div class="s3-inner">
+      <div class="stats-grid">
+        <div class="stat-row" data-delay="0">
+          <div class="stat-number">$30B</div>
+          <div class="stat-label">
+            annual waste globally
+            <span class="stat-note">money spent on product that goes directly to landfill</span>
+          </div>
+        </div>
+        <div class="stat-row" data-delay="200">
+          <div class="stat-number">200M</div>
+          <div class="stat-label">
+            tons entering landfills
+            <span class="stat-note">from bottles discarded with product remaining inside</span>
+          </div>
+        </div>
+        <div class="stat-row" data-delay="400">
+          <div class="stat-number" style="color:var(--red)">20%</div>
+          <div class="stat-label">
+            average waste per bottle
+            <span class="stat-note">not because we're careless — because we can't see inside</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: THE LANDSCAPE -->
+  <div class="slide" id="s4" data-name="CURRENT SOLUTIONS">
+    <div class="s4-inner">
+      <div class="s4-title">existing solutions fail</div>
+      <div class="compare-table">
+        <div class="ct-cell ct-header ct-none" style="background:transparent; border-bottom:1px solid rgba(245,242,236,0.08);"></div>
+        <div class="ct-cell ct-header industrial">INDUSTRIAL SCALES</div>
+        <div class="ct-cell ct-header smart">SMART BOTTLES</div>
+        <div class="ct-cell ct-header manual none-cell">MANUAL GUESSING</div>
+
+        <div class="ct-cell ct-row-label">Cost</div>
+        <div class="ct-cell bad">$500+</div>
+        <div class="ct-cell ok">$30–50</div>
+        <div class="ct-cell good">Free</div>
+
+        <div class="ct-cell ct-row-label">Where</div>
+        <div class="ct-cell bad" style="color:rgba(245,242,236,0.4)">Factory only</div>
+        <div class="ct-cell ok" style="color:rgba(245,242,236,0.4)">Proprietary</div>
+        <div class="ct-cell good" style="color:rgba(245,242,236,0.4)">Everywhere</div>
+
+        <div class="ct-cell ct-row-label">Accuracy</div>
+        <div class="ct-cell good">✓ Accurate</div>
+        <div class="ct-cell ok" style="color:var(--amber)">Single-use waste</div>
+        <div class="ct-cell bad">✗ Always wrong</div>
+
+        <div class="ct-cell ct-row-label">Verdict</div>
+        <div class="ct-cell bad" style="font-size:0.7rem;">Bolted to floor</div>
+        <div class="ct-cell bad" style="font-size:0.7rem;">Electronics → landfill</div>
+        <div class="ct-cell bad" style="font-size:0.7rem;">Not a solution</div>
+      </div>
+      <div style="margin-top:2rem; font-size:0.8rem; color:rgba(245,242,236,0.3); font-family:var(--serif); font-style:italic;">
+        None of them work for a person in their kitchen, a housekeeper, or a small business owner.
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: THE QUESTION → PULSE -->
+  <div class="slide" id="s5" data-name="THE IDEA">
+    <div class="s5-inner">
+      <div class="question-block">
+        <div class="q-line" data-delay="0">WHAT IF THE SENSOR WAS</div>
+        <div class="q-line" data-delay="300"><span class="hl">SEPARATE?</span></div>
+        <div class="q-line" data-delay="600" style="margin-top:1rem;">WHAT IF IT WAS</div>
+        <div class="q-line" data-delay="900"><span class="hl">REUSABLE?</span></div>
+      </div>
+      <div class="s5-answer revealed" id="s5-answer">one piece of hardware — infinite bottles — zero waste</div>
+      <div class="pulse-reveal" id="pulse-reveal">PULSE</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: THE PHYSICS -->
+  <div class="slide" id="s6" data-name="THE PHYSICS">
+    <div class="s6-inner">
+      <div class="s6-visual">
+        <svg class="bottle-diagram" viewBox="0 0 280 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- bottle body -->
+          <path d="M70 80 Q50 110 50 150 L50 360 Q50 380 80 380 L200 380 Q230 380 230 360 L230 150 Q230 110 210 80 Z" fill="rgba(0,200,255,0.03)" stroke="rgba(0,200,255,0.3)" stroke-width="1.5"/>
+          <!-- liquid fill -->
+          <path d="M52 220 L228 220 L228 360 Q228 378 200 378 L80 378 Q52 378 52 360 Z" fill="rgba(0,200,255,0.08)"/>
+          <!-- water line -->
+          <line x1="50" y1="220" x2="230" y2="220" stroke="rgba(0,200,255,0.5)" stroke-width="1" stroke-dasharray="5 3"/>
+          <!-- height indicator -->
+          <line x1="245" y1="220" x2="245" y2="378" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+          <line x1="238" y1="220" x2="252" y2="220" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+          <line x1="238" y1="378" x2="252" y2="378" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+          <text x="258" y="302" fill="rgba(0,200,255,0.8)" font-size="14" font-family="Bebas Neue" letter-spacing="2">h</text>
+          <!-- sensor ring at bottom -->
+          <ellipse cx="140" cy="378" rx="90" ry="10" fill="none" stroke="rgba(0,200,255,0.8)" stroke-width="2"/>
+          <text x="140" y="400" text-anchor="middle" fill="rgba(0,200,255,0.6)" font-size="10" font-family="DM Mono" letter-spacing="2">PULSE RING</text>
+          <!-- cap -->
+          <rect x="100" y="30" width="80" height="55" rx="8" fill="rgba(245,242,236,0.08)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
+          <!-- label -->
+          <rect x="70" y="160" width="140" height="50" rx="2" fill="rgba(245,242,236,0.04)" stroke="rgba(245,242,236,0.08)"/>
+          <text x="140" y="188" text-anchor="middle" fill="rgba(245,242,236,0.2)" font-size="10" font-family="DM Mono">product label</text>
+          <!-- pressure arrows -->
+          <text x="20" y="310" fill="rgba(0,200,255,0.4)" font-size="20" transform="rotate(-90 20 310)">→</text>
+          <text x="15" y="290" fill="rgba(0,200,255,0.3)" font-size="8" font-family="DM Mono">pressure</text>
+        </svg>
+        <div class="pressure-wave"></div>
+        <div class="pressure-particles">
+          <div class="pp"></div>
+          <div class="pp"></div>
+          <div class="pp"></div>
+        </div>
+      </div>
+      <div class="s6-text">
+        <div class="s6-title">HYDROSTATIC<br>PRESSURE</div>
+        <div class="formula-box">
+          <div class="formula">P = ρgh</div>
+          <div class="formula-label">pressure = density × gravity × height</div>
+        </div>
+        <div class="s6-desc">
+          The pressure at the bottom of any liquid column depends only on <strong>density, gravity, and height</strong>. Measure pressure → calculate volume. The bottle is irrelevant. A Coke bottle, bleach, industrial cleaner — <strong>same physics, every time</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: THE SENSOR -->
+  <div class="slide" id="s7" data-name="THE SENSOR">
+    <div class="s7-inner">
+      <div class="s7-left">
+        <div class="s7-title">MEMS PRESSURE<br>SENSORS</div>
+        <div class="chip-visual">
+          <div class="chip-legs top"><div class="leg"></div><div class="leg"></div><div class="leg"></div></div>
+          <div class="chip-legs bottom"><div class="leg"></div><div class="leg"></div><div class="leg"></div></div>
+          <div class="chip-legs left"><div class="leg"></div><div class="leg"></div><div class="leg"></div></div>
+          <div class="chip-legs right"><div class="leg"></div><div class="leg"></div><div class="leg"></div></div>
+          <div class="chip-inner">
+            <div class="chip-dot"></div>
+          </div>
+        </div>
+        <div class="s7-uses">
+          <div class="use-tag">📱 Smartphones</div>
+          <div class="use-tag">🚗 Automotive</div>
+          <div class="use-tag">🏥 Medical</div>
+          <div class="use-tag">✈️ Aviation</div>
+        </div>
+        <div class="price-drop" style="margin-top:1.5rem;">
+          <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,236,0.3);margin-bottom:0.5rem;">cost trajectory</div>
+          <div class="price-drop-track">
+            <svg viewBox="0 0 300 60" preserveAspectRatio="none" style="width:100%;height:100%">
+              <polyline points="0,5 50,12 100,22 150,35 200,44 250,52 300,55" stroke="rgba(0,200,255,0.5)" stroke-width="2" fill="none"/>
+              <circle cx="300" cy="55" r="4" fill="var(--blue)"/>
+              <text x="295" y="48" text-anchor="end" fill="rgba(0,200,255,0.8)" font-size="10" font-family="DM Mono">$0.80</text>
+              <text x="5" y="18" fill="rgba(245,242,236,0.3)" font-size="9" font-family="DM Mono">$5</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="s7-right">
+        <div style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,242,236,0.3);margin-bottom:1rem;">at volume</div>
+        <div class="big-price">$0<span class="cents">.80</span></div>
+        <div class="price-context">per mems sensor</div>
+        <div class="price-bar">
+          <div class="price-bar-fill"></div>
+        </div>
+        <div class="price-compare">
+          <div class="ours">PULSE: $0.80</div>
+          <div>Industrial: $500+</div>
+        </div>
+        <div style="margin-top:3rem; font-family:var(--serif); font-style:italic; font-size:0.9rem; color:rgba(245,242,236,0.35); line-height:1.8;">
+          "We're not inventing new physics — we're applying proven technology to a problem it was never used for."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: THE HARDWARE -->
+  <div class="slide" id="s8" data-name="THE HARDWARE">
+    <div class="s8-inner">
+      <div>
+        <div class="ring-visual">
+          <div class="ring-outer">
+            <div class="ring-inner">
+              <div class="ring-text">◯</div>
+            </div>
+          </div>
+          <div class="ring-orbits">
+            <div class="orbit-dot"></div>
+            <div class="orbit-dot"></div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:2rem;">
+          <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+            <div style="padding:0.5rem 1rem;border:1px solid rgba(0,200,255,0.2);font-size:0.65rem;letter-spacing:0.1em;color:rgba(0,200,255,0.6);">2" SPRAY</div>
+            <div style="padding:0.5rem 1rem;border:1px solid rgba(0,200,255,0.3);font-size:0.65rem;letter-spacing:0.1em;color:rgba(0,200,255,0.7);">8" STANDARD</div>
+            <div style="padding:0.5rem 1rem;border:1px solid rgba(0,200,255,0.2);font-size:0.65rem;letter-spacing:0.1em;color:rgba(0,200,255,0.6);">12" INDUSTRIAL</div>
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.65rem;color:rgba(245,242,236,0.25);letter-spacing:0.15em;text-transform:uppercase;">stretches to fit any bottle</div>
+        </div>
+      </div>
+      <div class="s8-specs">
+        <div class="s8-title">FLEXIBLE.<br>CHEMICAL-<br>RESISTANT.<br>REUSABLE.</div>
+        <div class="spec-list">
+          <div class="spec-item">
+            <div class="spec-icon">⬡</div>
+            <div class="spec-content">
+              <div class="spec-title">Universal Fit</div>
+              <div class="spec-desc">Fits any bottle from 2" to 12" — dish soap to industrial cleaner</div>
+            </div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">∞</div>
+            <div class="spec-content">
+              <div class="spec-title">Infinite Reuse</div>
+              <div class="spec-desc">Pop off empty bottle, click onto next one. One ring, years of use</div>
+            </div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">⊘</div>
+            <div class="spec-content">
+              <div class="spec-title">Zero E-Waste</div>
+              <div class="spec-desc">No electronics in landfills. The hardware outlasts any bottle</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: THE SETUP -->
+  <div class="slide" id="s9" data-name="HOW IT WORKS">
+    <div class="s9-inner">
+      <div class="s9-title">ONE SCAN. DONE.</div>
+      <div class="phone-container">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="scan-animation">
+            <div class="scan-bar"></div>
+            <div class="barcode-lines">
+              <div class="bc-line"></div><div class="bc-line"></div><div class="bc-line"></div>
+              <div class="bc-line"></div><div class="bc-line"></div><div class="bc-line"></div>
+              <div class="bc-line"></div><div class="bc-line"></div><div class="bc-line"></div>
+              <div class="bc-line"></div><div class="bc-line"></div><div class="bc-line"></div>
+              <div class="bc-line"></div><div class="bc-line"></div>
+            </div>
+          </div>
+          <div class="scan-step">→ scanning barcode...</div>
+          <div class="db-match">✓ DISH SOAP — DAWN PRO — ρ: 1.032 g/ml</div>
+          <div class="scan-step" style="margin-top:0.5rem; color:rgba(0,230,118,0.7);">→ ring calibrated</div>
+          <div style="margin-top:0.5rem; background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.15); border-radius:3px; padding:0.4rem 0.5rem;">
+            <div style="font-size:0.55rem;color:rgba(0,200,255,0.5);letter-spacing:0.1em;">CURRENT LEVEL</div>
+            <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--blue);">87%</div>
+            <div style="height:3px;background:rgba(245,242,236,0.08);margin-top:2px;">
+              <div style="height:100%;width:87%;background:var(--blue);box-shadow:0 0 6px var(--blue);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s9-steps">
+        <div class="step-item"><div class="step-num">1</div><div class="step-label">Scan barcode</div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-label">DB matches liquid</div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-label">Ring activates</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: THE DASHBOARD -->
+  <div class="slide" id="s10" data-name="VISIBILITY">
+    <div class="s10-inner">
+      <div class="s10-title">REAL-TIME VISIBILITY</div>
+      <div class="dashboard-grid">
+        <div class="dash-card high">
+          <div class="dash-product">Dish Soap / Kitchen</div>
+          <div class="dash-pct high">92%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill high" style="width:92%"></div></div>
+        </div>
+        <div class="dash-card mid">
+          <div class="dash-product">Glass Cleaner / Bath</div>
+          <div class="dash-pct mid">41%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill mid" style="width:41%"></div></div>
+        </div>
+        <div class="dash-card low">
+          <div class="dash-product">Hand Soap / Entry</div>
+          <div class="dash-pct low">8%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill low" style="width:8%"></div></div>
+        </div>
+        <div class="dash-card high">
+          <div class="dash-product">Laundry Detergent</div>
+          <div class="dash-pct high">76%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill high" style="width:76%"></div></div>
+        </div>
+        <div class="dash-card mid">
+          <div class="dash-product">Floor Cleaner / Utility</div>
+          <div class="dash-pct mid">33%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill mid" style="width:33%"></div></div>
+        </div>
+        <div class="dash-card mid">
+          <div class="dash-product">All-Purpose / Pantry</div>
+          <div class="dash-pct mid">58%</div>
+          <div class="dash-bar-track"><div class="dash-bar-fill mid" style="width:58%"></div></div>
+        </div>
+      </div>
+      <div class="alert-row">
+        <div class="alert-dot"></div>
+        <div class="alert-text"><strong>LOW INVENTORY ALERT</strong> — Hand Soap / Entry below 10% — estimated depletion: 1.2 days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: THE LIFECYCLE -->
+  <div class="slide" id="s11" data-name="ZERO WASTE">
+    <div class="s11-inner">
+      <div class="s11-title">POP OFF.<br><span>CLICK ON.</span><br>REPEAT.</div>
+      <div class="lifecycle-visual">
+        <div class="life-step">
+          <div class="life-icon">
+            <svg viewBox="0 0 80 120" fill="none" width="80" height="120">
+              <path d="M15 20 Q10 35 10 50 L10 110 Q10 118 20 118 L60 118 Q70 118 70 110 L70 50 Q70 35 65 20 Z" fill="rgba(245,242,236,0.05)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
+              <ellipse cx="40" cy="118" rx="30" ry="5" fill="none" stroke="rgba(0,200,255,0.8)" stroke-width="2"/>
+              <text x="40" y="75" text-anchor="middle" fill="rgba(0,200,255,0.5)" font-size="10" font-family="DM Mono">IN USE</text>
+            </svg>
+          </div>
+          <div class="life-label">bottle in use</div>
+        </div>
+        <div class="life-arrow">→</div>
+        <div class="life-step">
+          <div class="life-icon">
+            <svg viewBox="0 0 80 120" fill="none" width="80" height="120">
+              <path d="M15 20 Q10 35 10 50 L10 110 Q10 118 20 118 L60 118 Q70 118 70 110 L70 50 Q70 35 65 20 Z" fill="rgba(245,242,236,0.02)" stroke="rgba(245,242,236,0.1)" stroke-width="1"/>
+              <ellipse cx="40" cy="118" rx="30" ry="5" fill="none" stroke="rgba(255,58,58,0.6)" stroke-width="2"/>
+              <text x="40" y="75" text-anchor="middle" fill="rgba(255,58,58,0.4)" font-size="9" font-family="DM Mono">EMPTY</text>
+              <path d="M30 110 Q40 105 50 110" stroke="rgba(0,200,255,0.8)" stroke-width="2" fill="none" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+          <div class="life-label">bottle empty — pop ring</div>
+        </div>
+        <div class="life-arrow">→</div>
+        <div class="life-step">
+          <div class="life-icon">
+            <svg viewBox="0 0 80 120" fill="none" width="80" height="120">
+              <path d="M15 20 Q10 35 10 50 L10 110 Q10 118 20 118 L60 118 Q70 118 70 110 L70 50 Q70 35 65 20 Z" fill="rgba(0,200,255,0.05)" stroke="rgba(0,200,255,0.25)" stroke-width="1"/>
+              <path d="M10 70 L70 70 L70 110 Q70 118 60 118 L20 118 Q10 118 10 110 Z" fill="rgba(0,200,255,0.08)"/>
+              <ellipse cx="40" cy="118" rx="30" ry="5" fill="none" stroke="rgba(0,200,255,0.9)" stroke-width="2"/>
+              <text x="40" y="75" text-anchor="middle" fill="rgba(0,200,255,0.6)" font-size="9" font-family="DM Mono">NEW</text>
+            </svg>
+          </div>
+          <div class="life-label">click onto new bottle</div>
+        </div>
+      </div>
+      <div class="s11-stats">
+        <div class="s11-stat">
+          <div class="s11-stat-num">∞</div>
+          <div class="s11-stat-label">bottles per ring</div>
+        </div>
+        <div class="s11-stat">
+          <div class="s11-stat-num">0</div>
+          <div class="s11-stat-label">electronics in landfill</div>
+        </div>
+        <div class="s11-stat">
+          <div class="s11-stat-num">3yr+</div>
+          <div class="s11-stat-label">hardware lifespan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: ERRC GRID -->
+  <div class="slide" id="s12" data-name="BLUE OCEAN">
+    <div class="s12-inner">
+      <div class="s12-title">Blue Ocean Strategy</div>
+      <div class="errc-grid">
+        <div class="errc-quad">
+          <div class="errc-header eliminate">ELIMINATE</div>
+          <div class="errc-item">Guessing & estimation</div>
+          <div class="errc-item">Emergency stock runs</div>
+          <div class="errc-item">Product waste (20%)</div>
+          <div class="errc-item">Sensor-per-bottle model</div>
+        </div>
+        <div class="errc-quad">
+          <div class="errc-header raise">RAISE</div>
+          <div class="errc-item">Inventory visibility: zero → real-time</div>
+          <div class="errc-item">Consumption data depth</div>
+          <div class="errc-item">Cross-bottle coverage</div>
+          <div class="errc-item">Enterprise ROI clarity</div>
+        </div>
+        <div class="errc-quad" style="border-top:none;">
+          <div class="errc-header reduce">REDUCE</div>
+          <div class="errc-item">Cost: $500 → $15 (97%↓)</div>
+          <div class="errc-item">Setup time: hours → seconds</div>
+          <div class="errc-item">E-waste: to zero</div>
+          <div class="errc-item">Friction to adoption</div>
+        </div>
+        <div class="errc-quad" style="border-top:none;">
+          <div class="errc-header create">CREATE</div>
+          <div class="errc-item">Usage data asset (never existed)</div>
+          <div class="errc-item">CPG last-mile intelligence</div>
+          <div class="errc-item">New hardware category</div>
+          <div class="errc-item">SaaS data subscription layer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: VALIDATION -->
+  <div class="slide" id="s13" data-name="VALIDATION">
+    <div class="s13-inner">
+      <div class="s13-title">DEMAND IS REAL</div>
+      <div class="validation-tiers">
+        <div class="val-tier">
+          <div class="tier-label consumer">CONSUMER</div>
+          <div class="tier-proof">Reddit post asking "where can I buy this?" received overwhelming community response. People <em>actively looking</em> to purchase. 100M+ US households throw away product every week.</div>
+          <div class="tier-stat">
+            <div class="tier-big-num consumer">2,300</div>
+            <div class="tier-big-label">upvotes + 500 comments</div>
+          </div>
+        </div>
+        <div class="val-tier">
+          <div class="tier-label business">BUSINESS</div>
+          <div class="tier-proof">Hotel manager calculated direct chemical savings. 12 facility managers already willing to participate in paid pilot testing.</div>
+          <div class="tier-stat">
+            <div class="tier-big-num business">$12K</div>
+            <div class="tier-big-label">savings/yr per hotel</div>
+          </div>
+        </div>
+        <div class="val-tier">
+          <div class="tier-label data">DATA LAYER</div>
+          <div class="tier-proof">Former P&G executive confirmed the blindspot: brands spend billions on advertising yet have zero data on how consumers actually use their products. The final mile of data.</div>
+          <div class="tier-stat">
+            <div class="tier-big-num data">$0</div>
+            <div class="tier-big-label">consumption data CPG has today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: UNIT ECONOMICS -->
+  <div class="slide" id="s14" data-name="UNIT ECONOMICS">
+    <div class="s14-inner">
+      <div class="s14-title">UNIT ECONOMICS</div>
+      <div class="unit-econ">
+        <div class="ue-col bom">
+          <div class="ue-label">Bill of Materials</div>
+          <div class="ue-value bom">$2.80</div>
+          <div class="ue-source">MEMS + BT + battery + housing<br>supplier-confirmed at volume</div>
+        </div>
+        <div class="ue-col retail">
+          <div class="ue-label">Retail Price</div>
+          <div class="ue-value retail">$14.99</div>
+          <div class="ue-source">consumer target price<br>comparable product benchmarks</div>
+        </div>
+        <div class="ue-col margin">
+          <div class="ue-label">Gross Margin</div>
+          <div class="ue-value margin">81%</div>
+          <div class="ue-source">hardware margin target<br>+ SaaS data subscription on top</div>
+        </div>
+      </div>
+      <div class="margin-viz">
+        <div class="margin-fill"></div>
+      </div>
+      <div style="margin-top:3rem; display:flex; justify-content:center; gap:3rem;">
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue';font-size:2.5rem;color:var(--blue);">$0.80</div>
+          <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,236,0.3);">MEMS sensor</div>
+        </div>
+        <div style="width:1px;background:rgba(245,242,236,0.08)"></div>
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue';font-size:2.5rem;color:var(--amber);">+</div>
+          <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,236,0.3);">SaaS margin above</div>
+        </div>
+        <div style="width:1px;background:rgba(245,242,236,0.08)"></div>
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue';font-size:2.5rem;color:#00e676;">81%</div>
+          <div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,236,0.3);">gross margin HW</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: WHY NOW -->
+  <div class="slide" id="s15" data-name="WHY NOW">
+    <div class="s15-inner">
+      <div class="s15-title">Why now?<br>Three forces converging.</div>
+      <div class="why-now-forces">
+        <div class="force-card">
+          <div class="force-num">1</div>
+          <div class="force-icon">⚡</div>
+          <div class="force-title">SENSOR COST CROSSED $1</div>
+          <div class="force-desc">MEMS sensors just dropped below <strong>$1 for the first time in history</strong>. This product was physically impossible 5 years ago. The window just opened.</div>
+          <div class="force-tag">First time ever</div>
+        </div>
+        <div class="force-card">
+          <div class="force-num">2</div>
+          <div class="force-icon">🌍</div>
+          <div class="force-title">ESG MANDATES NOW LAW</div>
+          <div class="force-desc">EU + California regulations now require waste reporting for public companies. <strong>Compliance creates demand.</strong> Pulse is the data infrastructure.</div>
+          <div class="force-tag">Mandatory reporting</div>
+        </div>
+        <div class="force-card">
+          <div class="force-num">3</div>
+          <div class="force-icon">📊</div>
+          <div class="force-title">CPG'S LAST MILE BLIND SPOT</div>
+          <div class="force-desc">P&G, Unilever, Colgate have optimized every piece of their supply chain — <strong>except what happens after purchase</strong>. That's Pulse's data layer.</div>
+          <div class="force-tag">$500B CPG market</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: WHERE WE ARE -->
+  <div class="slide" id="s16" data-name="THE ROADMAP">
+    <div class="s16-inner">
+      <div>
+        <div class="s16-col-title now">TODAY WE HAVE</div>
+        <div class="status-item">
+          <div class="status-check done">✓</div>
+          <div class="status-text"><strong>Problem validation</strong> — real people, documented pain, Reddit evidence</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check done">✓</div>
+          <div class="status-text"><strong>Technical research</strong> — physics validated, sensors identified, BOM modeled</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check done">✓</div>
+          <div class="status-text"><strong>Market conversations</strong> — 12 facility managers ready to test, industry advisors</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check done">✓</div>
+          <div class="status-text"><strong>Unit economics</strong> — supplier-confirmed costs, 81% GM target</div>
+        </div>
+        <div class="timeline-bar"><div class="timeline-fill" style="width:25%"></div></div>
+        <div class="timeline-label"><span>NOW</span><span>6 MONTHS</span><span>12 MONTHS</span><span>18 MONTHS</span></div>
+      </div>
+      <div>
+        <div class="s16-col-title next">NEXT 6 MONTHS</div>
+        <div class="status-item">
+          <div class="status-check pending">→</div>
+          <div class="status-text"><strong>Functional prototypes</strong> — first physical hardware, lab-tested accuracy</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check pending">→</div>
+          <div class="status-text"><strong>Hotel pilots</strong> — 5 facilities, real-world data, case studies</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check pending">→</div>
+          <div class="status-text"><strong>Density database v1</strong> — 500+ common liquids, cross-referenced</div>
+        </div>
+        <div class="status-item">
+          <div class="status-check pending">→</div>
+          <div class="status-text"><strong>Consumer beta</strong> — 100 users, feedback loop, app v1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: THE CLOSE -->
+  <div class="slide" id="s17" data-name="PULSE">
+    <div class="s17-inner">
+      <div class="earth-zoom"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="s17-sup">THE INVISIBLE MADE VISIBLE</div>
+      <div class="s17-main">
+        200M TONS<br>
+        <span class="strike">INVISIBLE</span><br>
+        <span class="visible">VISIBLE</span>
+      </div>
+      <div class="s17-tagline">
+        Not by reinventing the bottle —<br>
+        by making the invisible, <em>visible</em>.
+      </div>
+      <div class="s17-brand">PULSE</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dots nav -->
+<div id="nav">
+  <!-- dots generated by JS -->
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  const counter = document.getElementById('slide-counter');
+  const slideNameEl = document.getElementById('slide-name');
+  const progress = document.getElementById('progress');
+  let current = 0;
+  let isAnimating = false;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    nav.appendChild(dot);
+  });
+
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+  function updateCounter() {
+    const n = String(current + 1).padStart(2, '0');
+    const t = String(slides.length).padStart(2, '0');
+    counter.textContent = n + ' / ' + t;
+    slideNameEl.textContent = slides[current].dataset.name || '';
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function goTo(idx) {
+    if (idx === current || isAnimating) return;
+    isAnimating = true;
+    const prev = slides[current];
+    const next = slides[idx];
+    const dir = idx > current ? 1 : -1;
+
+    // Remove active from old
+    prev.classList.add('exit');
+    prev.classList.remove('active');
+
+    // Set incoming clip from right or left
+    if (dir > 0) {
+      next.style.clipPath = 'inset(0 0% 0 100%)';
+    } else {
+      next.style.clipPath = 'inset(0 100% 0 0%)';
+    }
+    next.style.opacity = '1';
+    next.style.pointerEvents = 'all';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        next.style.transition = 'clip-path 0.75s cubic-bezier(0.77,0,0.175,1)';
+        next.style.clipPath = 'inset(0 0% 0 0%)';
+
+        // Also animate out
+        prev.style.transition = 'clip-path 0.75s cubic-bezier(0.77,0,0.175,1)';
+        if (dir > 0) {
+          prev.style.clipPath = 'inset(0 100% 0 0%)';
+        } else {
+          prev.style.clipPath = 'inset(0 0% 0 100%)';
+        }
+      });
+    });
+
+    setTimeout(() => {
+      prev.classList.remove('exit');
+      prev.style.clipPath = '';
+      prev.style.transition = '';
+      prev.style.opacity = '';
+      prev.style.pointerEvents = '';
+
+      next.style.transition = '';
+      next.classList.add('active');
+      current = idx;
+      updateDots();
+      updateCounter();
+      triggerSlideAnimations(current);
+      isAnimating = false;
+    }, 780);
+  }
+
+  function triggerSlideAnimations(idx) {
+    // Slide 3 - stat rows
+    if (idx === 2) {
+      const rows = document.querySelectorAll('#s3 .stat-row');
+      rows.forEach(r => r.classList.remove('revealed'));
+      rows.forEach((r, i) => {
+        setTimeout(() => r.classList.add('revealed'), parseInt(r.dataset.delay) + 100);
+      });
+    }
+    // Slide 5 - questions
+    if (idx === 4) {
+      const qs = document.querySelectorAll('#s5 .q-line');
+      qs.forEach(q => q.classList.remove('revealed'));
+      qs.forEach((q, i) => {
+        setTimeout(() => q.classList.add('revealed'), parseInt(q.dataset.delay) + 100);
+      });
+      setTimeout(() => {
+        document.getElementById('pulse-reveal').classList.add('revealed');
+      }, 1200);
+    }
+  }
+
+  // Init
+  updateDots();
+  updateCounter();
+  // Set initial clip-path for non-active slides
+  slides.forEach((s, i) => {
+    if (i !== 0) {
+      s.style.clipPath = 'inset(0 100% 0 0)';
+      s.style.opacity = '0';
+    } else {
+      s.style.clipPath = 'inset(0 0% 0 0)';
+      s.style.opacity = '1';
+    }
+  });
+
+  document.getElementById('arrow-right').addEventListener('click', () => goTo(Math.min(current + 1, slides.length - 1)));
+  document.getElementById('arrow-left').addEventListener('click', () => goTo(Math.max(current - 1, 0)));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(Math.min(current + 1, slides.length - 1));
+    if (e.key === 'ArrowLeft') goTo(Math.max(current - 1, 0));
+  });
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 6 + 'px';
+    cursor.style.top = e.clientY - 6 + 'px';
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goTo(Math.min(current + 1, slides.length - 1));
+      else goTo(Math.max(current - 1, 0));
+    }
+  });
+</script>
+</body>
+</html>
