@@ -231,20 +231,32 @@
 
   /* ===== BUYER UTILITY MAP ===== */
   #s13bum { background: #050508; }
-  .bum-inner { width: 92%; max-width: 1000px; }
+  #s13bum .slide-scaler {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #s13bum .bum-scale-wrap {
+    transform: scale(0.8);
+    transform-origin: center center;
+    width: 125%; /* compensate for scale so content fills nicely */
+  }
+  .bum-inner { width: 100%; max-width: 1200px; }
   .bum-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .bum-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1.5rem; }
-  .bum-grid { display: grid; grid-template-columns: 120px repeat(6, 1fr); gap: 0; border: 1px solid rgba(245,242,236,0.08); }
-  .bum-cell { padding: 0.7rem 0.6rem; border-right: 1px solid rgba(245,242,236,0.06); border-bottom: 1px solid rgba(245,242,236,0.06); font-size: 0.6rem; letter-spacing: 0.05em; color: rgba(245,242,236,0.3); text-align: center; transition: all 0.3s; }
+  .bum-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1rem; }
+  .bum-grid { display: grid; grid-template-columns: 110px repeat(6, 1fr); gap: 0; border: 1px solid rgba(245,242,236,0.08); }
+  .bum-cell { padding: 0.55rem 0.5rem; border-right: 1px solid rgba(245,242,236,0.06); border-bottom: 1px solid rgba(245,242,236,0.06); font-size: 0.52rem; letter-spacing: 0.04em; color: rgba(245,242,236,0.3); text-align: center; transition: all 0.3s; line-height: 1.45; }
   .bum-cell:last-child { border-right: none; }
-  .bum-row-label { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,242,236,0.25); text-align: left; background: rgba(245,242,236,0.02); display: flex; align-items: center; }
-  .bum-col-header { font-family: var(--display); font-size: 0.9rem; letter-spacing: 0.08em; color: rgba(245,242,236,0.4); background: rgba(245,242,236,0.03); }
+  .bum-row-label { font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,242,236,0.25); text-align: left; background: rgba(245,242,236,0.02); display: flex; align-items: center; padding: 0.55rem 0.5rem; border-right: 1px solid rgba(245,242,236,0.06); border-bottom: 1px solid rgba(245,242,236,0.06); }
+  .bum-col-header { font-family: var(--display); font-size: 0.85rem; letter-spacing: 0.08em; color: rgba(245,242,236,0.4); background: rgba(245,242,236,0.03); padding: 0.55rem 0.5rem; border-right: 1px solid rgba(245,242,236,0.06); border-bottom: 1px solid rgba(245,242,236,0.06); text-align: center; }
   .bum-col-header.corner { background: transparent; }
   .bum-cell.blocked { background: rgba(0,200,255,0.12); color: var(--blue); border-color: rgba(0,200,255,0.2); font-weight: 500; }
   .bum-cell.blocked-red { background: rgba(255,58,58,0.1); color: var(--red); border-color: rgba(255,58,58,0.2); }
-  .bum-legend { display: flex; gap: 2rem; margin-top: 1rem; }
-  .bum-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,242,236,0.3); }
-  .bum-legend-dot { width: 10px; height: 10px; }
+  .bum-legend { display: flex; gap: 2rem; margin-top: 0.75rem; }
+  .bum-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,242,236,0.3); }
+  .bum-legend-dot { width: 10px; height: 10px; flex-shrink: 0; }
 
   /* ===== S13: THREE TIERS OF NONCUSTOMERS ===== */
   #s13 { background: #04060a; }
@@ -652,13 +664,9 @@
           <div class="canvas-grid-line" style="top:50%"></div>
           <div class="canvas-grid-line" style="top:75%"></div>
           <svg class="canvas-svg" viewBox="0 0 700 280" preserveAspectRatio="none">
-            <!-- Industrial Scales: HIGH cost (expensive = high on cost axis), no universal fit, HIGH accuracy (only strength), no real-time data, mid reusability (machine lasts but immobile), no CPG insights, terrible setup -->
             <polyline points="50,30 150,240 250,30 350,240 450,150 550,240 650,240" fill="none" stroke="rgba(245,242,236,0.25)" stroke-width="2" stroke-dasharray="6 3"/>
-            <!-- Smart Bottles: mid cost, LOW universal fit (proprietary only), mid accuracy, mid data (app but siloed), LOW reuse (sensor in landfill), LOW CPG insights, mid setup -->
             <polyline points="50,150 150,240 250,120 350,150 450,240 550,240 650,150" fill="none" stroke="rgba(255,184,0,0.55)" stroke-width="2" stroke-dasharray="4 3"/>
-            <!-- PULSE: LOW cost ($14.99 reusable forever), HIGH universal fit, HIGH accuracy, HIGH real-time data, HIGH reuse (infinite), HIGH CPG insights, HIGH ease of setup -->
             <polyline points="50,240 150,30 250,30 350,30 450,30 550,30 650,30" fill="none" stroke="var(--blue)" stroke-width="3"/>
-            <!-- Industrial dots -->
             <circle cx="50" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
             <circle cx="150" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
             <circle cx="250" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
@@ -666,7 +674,6 @@
             <circle cx="450" cy="150" r="4" fill="rgba(245,242,236,0.3)"/>
             <circle cx="550" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
             <circle cx="650" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
-            <!-- Smart Bottle dots -->
             <circle cx="50" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
             <circle cx="150" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
             <circle cx="250" cy="120" r="4" fill="rgba(255,184,0,0.7)"/>
@@ -674,7 +681,6 @@
             <circle cx="450" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
             <circle cx="550" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
             <circle cx="650" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
-            <!-- Pulse dots -->
             <circle cx="50" cy="240" r="5" fill="var(--blue)"/>
             <circle cx="150" cy="30" r="5" fill="var(--blue)"/>
             <circle cx="250" cy="30" r="5" fill="var(--blue)"/>
@@ -704,71 +710,75 @@
 
   <!-- SLIDE 13: BUYER UTILITY MAP -->
   <div class="slide" id="s13bum" data-name="BUYER UTILITY MAP">
-    <div class="bum-inner">
-      <div class="bum-title">Buyer Utility Map (Blue Ocean Strategy)</div>
-      <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does Pulse remove blocks?</div>
-      <div class="bum-grid">
-        <!-- Header row -->
-        <div class="bum-cell bum-col-header corner"></div>
-        <div class="bum-cell bum-col-header">PURCHASE</div>
-        <div class="bum-cell bum-col-header">DELIVERY</div>
-        <div class="bum-cell bum-col-header">USE</div>
-        <div class="bum-cell bum-col-header">SUPPLEMENTS</div>
-        <div class="bum-cell bum-col-header">MAINTENANCE</div>
-        <div class="bum-cell bum-col-header">DISPOSAL</div>
-        <!-- Row 1: Customer Productivity -->
-        <div class="bum-cell bum-row-label">Customer Productivity</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ Pulse: real-time digital level + full usage history</strong></span></div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ Pulse: automated low-stock alerts sent to purchasing</strong></span></div>
-        <div class="bum-cell">–</div>
-        <!-- Row 2: Simplicity -->
-        <div class="bum-cell bum-row-label">Simplicity</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ Pulse: glance at app, exact % shown instantly</strong></span></div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <!-- Row 3: Convenience -->
-        <div class="bum-cell bum-row-label">Convenience</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ Pulse: order online, set up in seconds</strong></span></div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ Pulse: one ring clips to any new bottle in seconds</strong></span></div>
-        <!-- Row 4: Risk -->
-        <div class="bum-cell bum-row-label">Risk</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ Pulse: reusable sensor never enters landfill</strong></span></div>
-        <!-- Row 5: Fun & Image -->
-        <div class="bum-cell bum-row-label">Fun & Image</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ Pulse: live dashboard proves precision management to stakeholders</strong></span></div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <!-- Row 6: Environmental -->
-        <div class="bum-cell bum-row-label">Environmental</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ Pulse: use every last drop, cuts waste to near zero</strong></span></div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell">–</div>
-        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ Pulse: zero electronics disposed, zero product residue wasted</strong></span></div>
-      </div>
-      <div class="bum-legend">
-        <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → Pulse solution shown in each cell</div>
-        <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → Pulse eliminates entirely</div>
-        <div class="bum-legend-item" style="color:rgba(245,242,236,0.2);font-style:italic;">All 36 cells examined and 8 meaningful blocks identified across hotels, facilities &amp; households</div>
+    <div class="slide-scaler">
+      <div class="bum-scale-wrap">
+        <div class="bum-inner">
+          <div class="bum-title">Buyer Utility Map (Blue Ocean Strategy)</div>
+          <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does Pulse remove blocks?</div>
+          <div class="bum-grid">
+            <!-- Header row -->
+            <div class="bum-col-header corner"></div>
+            <div class="bum-col-header">PURCHASE</div>
+            <div class="bum-col-header">DELIVERY</div>
+            <div class="bum-col-header">USE</div>
+            <div class="bum-col-header">SUPPLEMENTS</div>
+            <div class="bum-col-header">MAINTENANCE</div>
+            <div class="bum-col-header">DISPOSAL</div>
+            <!-- Row 1: Customer Productivity -->
+            <div class="bum-row-label">Customer Productivity</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ Pulse: real-time digital level + full usage history</strong></span></div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ Pulse: automated low-stock alerts sent to purchasing</strong></span></div>
+            <div class="bum-cell">–</div>
+            <!-- Row 2: Simplicity -->
+            <div class="bum-row-label">Simplicity</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ Pulse: glance at app, exact % shown instantly</strong></span></div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <!-- Row 3: Convenience -->
+            <div class="bum-row-label">Convenience</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ Pulse: order online, set up in seconds</strong></span></div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ Pulse: one ring clips to any new bottle in seconds</strong></span></div>
+            <!-- Row 4: Risk -->
+            <div class="bum-row-label">Risk</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ Pulse: reusable sensor never enters landfill</strong></span></div>
+            <!-- Row 5: Fun & Image -->
+            <div class="bum-row-label">Fun & Image</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ Pulse: live dashboard proves precision management to stakeholders</strong></span></div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <!-- Row 6: Environmental -->
+            <div class="bum-row-label">Environmental</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ Pulse: use every last drop, cuts waste to near zero</strong></span></div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ Pulse: zero electronics disposed, zero product residue wasted</strong></span></div>
+          </div>
+          <div class="bum-legend">
+            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → Pulse solution shown in each cell</div>
+            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → Pulse eliminates entirely</div>
+            <div class="bum-legend-item" style="color:rgba(245,242,236,0.2);font-style:italic;">All 36 cells examined and 8 meaningful blocks identified across hotels, facilities &amp; households</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -879,7 +889,7 @@
         <div class="s16-col-title now">TODAY WE HAVE</div>
         <div class="status-item"><div class="status-check done">✓</div><div class="status-text"><strong>Problem validation</strong> — real people, documented pain, Reddit evidence</div></div>
         <div class="status-item"><div class="status-check done">✓</div><div class="status-text"><strong>Technical research</strong> — physics validated, sensors identified, BOM modeled</div></div>
-        <div class="status-item"><div class="status-check done">✓</div><div class="status-text"><strong>Market conversations</strong> — 12 facility managers ready to test, industry advisors</div></div>
+        <div class="status-item"><div class="status-check done">✓</div><div class="status-text"><strong>Market conversations</strong> — 11 facility managers ready to test, industry advisors</div></div>
         <div class="status-item"><div class="status-check done">✓</div><div class="status-text"><strong>Unit economics</strong> — supplier-confirmed costs, 81% GM target</div></div>
         <div class="timeline-bar"><div class="timeline-fill" style="width:25%"></div></div>
         <div class="timeline-label"><span>NOW</span><span>6 MONTHS</span><span>12 MONTHS</span><span>18 MONTHS</span></div>
