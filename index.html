@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pulse: Blue Ocean Entrepreneurship Competition</title>
+<title>NextDrop: Blue Ocean Entrepreneurship Competition</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,8 +53,8 @@
   .waste-bar-label { font-size: 0.7rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.4); text-transform: uppercase; margin-bottom: 0.75rem; }
   .waste-bar-track { width: 100%; height: 40px; background: rgba(245,242,236,0.06); border: 1px solid rgba(245,242,236,0.1); position: relative; overflow: hidden; }
   .waste-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 80%; background: rgba(245,242,236,0.15); display: flex; align-items: center; padding-left: 1rem; font-size: 0.8rem; color: rgba(245,242,236,0.5); letter-spacing: 0.1em; }
-  .waste-bar-waste { position: absolute; right: 0; top: 0; bottom: 0; width: 20%; background: var(--red); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 1.4rem; color: white; animation: pulseRed 2s ease-in-out infinite; }
-  @keyframes pulseRed { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+  .waste-bar-waste { position: absolute; right: 0; top: 0; bottom: 0; width: 20%; background: var(--red); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 1.4rem; color: white; animation: NextDropRed 2s ease-in-out infinite; }
+  @keyframes NextDropRed { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
   .waste-bar-pct-label { position: absolute; right: 0; top: -1.5rem; font-size: 0.7rem; color: var(--red); letter-spacing: 0.15em; }
 
   /* S3 */ #s3 { background: var(--black); }
@@ -86,8 +86,8 @@
   .q-line .hl { color: var(--blue); }
   .s5-answer { font-family: var(--serif); font-style: italic; font-size: clamp(1.2rem, 2.5vw, 1.8rem); color: rgba(245,242,236,0.4); margin-top: 3rem; opacity: 0; transition: opacity 0.8s 1.2s; }
   .s5-answer.revealed { opacity: 1; }
-  .pulse-reveal { font-family: var(--display); font-size: clamp(5rem, 15vw, 14rem); color: var(--blue); letter-spacing: 0.1em; line-height: 1; opacity: 0; transform: scale(0.8); transition: all 0.8s 0.5s cubic-bezier(0.16,1,0.3,1); text-shadow: 0 0 80px rgba(0,200,255,0.5); }
-  .pulse-reveal.revealed { opacity: 1; transform: scale(1); }
+  .NextDrop-reveal { font-family: var(--display); font-size: clamp(5rem, 15vw, 14rem); color: var(--blue); letter-spacing: 0.1em; line-height: 1; opacity: 0; transform: scale(0.8); transition: all 0.8s 0.5s cubic-bezier(0.16,1,0.3,1); text-shadow: 0 0 80px rgba(0,200,255,0.5); }
+  .NextDrop-reveal.revealed { opacity: 1; transform: scale(1); }
 
   /* S6 */ #s6 { background: #050810; }
   .s6-inner { width: 90%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
@@ -111,8 +111,8 @@
   .s7-title { font-family: var(--display); font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 0.95; color: var(--white); margin-bottom: 1.5rem; }
   .chip-visual { width: 140px; height: 140px; border: 1px solid rgba(0,200,255,0.3); position: relative; margin: 2rem 0; background: rgba(0,200,255,0.03); }
   .chip-inner { position: absolute; inset: 20px; border: 1px solid rgba(0,200,255,0.2); display: flex; align-items: center; justify-content: center; }
-  .chip-dot { width: 20px; height: 20px; background: var(--blue); animation: chipPulse 1.5s ease-in-out infinite; box-shadow: 0 0 20px var(--blue); }
-  @keyframes chipPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+  .chip-dot { width: 20px; height: 20px; background: var(--blue); animation: chipNextDrop 1.5s ease-in-out infinite; box-shadow: 0 0 20px var(--blue); }
+  @keyframes chipNextDrop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
   .chip-legs { position: absolute; }
   .chip-legs.top { top: -8px; left: 20px; right: 20px; height: 8px; display: flex; gap: 10px; }
   .chip-legs.bottom { bottom: -8px; left: 20px; right: 20px; height: 8px; display: flex; gap: 10px; }
@@ -180,8 +180,8 @@
   .dash-bar-track { width: 100%; height: 4px; background: rgba(245,242,236,0.08); }
   .dash-bar-fill { height: 100%; }
   .dash-bar-fill.high { background: #00e676; } .dash-bar-fill.mid { background: var(--amber); } .dash-bar-fill.low { background: var(--red); }
-  .alert-row { border: 1px solid rgba(255,58,58,0.3); background: rgba(255,58,58,0.05); padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 1rem; animation: alertPulse 2s ease-in-out infinite; }
-  @keyframes alertPulse { 0%,100% { border-color: rgba(255,58,58,0.3); } 50% { border-color: rgba(255,58,58,0.7); } }
+  .alert-row { border: 1px solid rgba(255,58,58,0.3); background: rgba(255,58,58,0.05); padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 1rem; animation: alertNextDrop 2s ease-in-out infinite; }
+  @keyframes alertNextDrop { 0%,100% { border-color: rgba(255,58,58,0.3); } 50% { border-color: rgba(255,58,58,0.7); } }
   .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: dotBlink 1s ease-in-out infinite; }
   @keyframes dotBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
   .alert-text { font-size: 0.75rem; color: rgba(245,242,236,0.6); letter-spacing: 0.05em; }
@@ -347,8 +347,8 @@
   .s17-main .visible { color: var(--blue); text-shadow: 0 0 80px rgba(0,200,255,0.6); }
   .s17-tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1rem, 2.5vw, 1.5rem); color: rgba(245,242,236,0.4); margin-top: 3rem; position: relative; z-index: 1; }
   .s17-brand { font-family: var(--display); font-size: 5rem; color: var(--blue); letter-spacing: 0.3em; margin-top: 2rem; position: relative; z-index: 1; text-shadow: 0 0 60px rgba(0,200,255,0.5); }
-  .pulse-ring { position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(0,200,255,0.2); animation: pulsate 3s ease-out infinite; }
-  .pulse-ring:nth-child(2) { animation-delay: 1s; } .pulse-ring:nth-child(3) { animation-delay: 2s; }
+  .NextDrop-ring { position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(0,200,255,0.2); animation: pulsate 3s ease-out infinite; }
+  .NextDrop-ring:nth-child(2) { animation-delay: 1s; } .NextDrop-ring:nth-child(3) { animation-delay: 2s; }
   @keyframes pulsate { 0% { transform: scale(0.5); opacity: 0.8; } 100% { transform: scale(4); opacity: 0; } }
 
   /* TRANSITIONS */
@@ -365,7 +365,7 @@
 
 <div id="cursor"></div>
 <div id="progress"></div>
-<div id="slide-label" class="slide-label">PULSE / <span id="slide-name">INTRO</span></div>
+<div id="slide-label" class="slide-label">NextDrop / <span id="slide-name">INTRO</span></div>
 <div id="slide-counter">01 / 17</div>
 <button id="arrow-left">←</button>
 <button id="arrow-right">→</button>
@@ -473,7 +473,7 @@
         <div class="q-line" data-delay="900"><span class="hl">REUSABLE?</span></div>
       </div>
       <div class="s5-answer revealed" id="s5-answer">one piece of hardware | infinite bottles | zero waste</div>
-      <div class="pulse-reveal" id="pulse-reveal">PULSE</div>
+      <div class="NextDrop-reveal" id="NextDrop-reveal">NextDrop</div>
     </div>
   </div>
 
@@ -490,7 +490,7 @@
           <line x1="238" y1="378" x2="252" y2="378" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
           <text x="258" y="302" fill="rgba(0,200,255,0.8)" font-size="14" font-family="Bebas Neue" letter-spacing="2">h</text>
           <ellipse cx="140" cy="378" rx="90" ry="10" fill="none" stroke="rgba(0,200,255,0.8)" stroke-width="2"/>
-          <text x="140" y="400" text-anchor="middle" fill="rgba(0,200,255,0.6)" font-size="10" font-family="DM Mono" letter-spacing="2">PULSE RING</text>
+          <text x="140" y="400" text-anchor="middle" fill="rgba(0,200,255,0.6)" font-size="10" font-family="DM Mono" letter-spacing="2">NextDrop RING</text>
           <rect x="100" y="30" width="80" height="55" rx="8" fill="rgba(245,242,236,0.08)" stroke="rgba(245,242,236,0.2)" stroke-width="1"/>
           <rect x="70" y="160" width="140" height="50" rx="2" fill="rgba(245,242,236,0.04)" stroke="rgba(245,242,236,0.08)"/>
           <text x="140" y="188" text-anchor="middle" fill="rgba(245,242,236,0.2)" font-size="10" font-family="DM Mono">product label</text>
@@ -541,7 +541,7 @@
         <div class="big-price">$0<span class="cents">.80</span></div>
         <div class="price-context">per mems sensor</div>
         <div class="price-bar"><div class="price-bar-fill"></div></div>
-        <div class="price-compare"><div class="ours">PULSE: $0.80</div><div>Industrial: $500+</div></div>
+        <div class="price-compare"><div class="ours">NextDrop: $0.80</div><div>Industrial: $500+</div></div>
         <div style="margin-top:3rem; font-family:var(--serif); font-style:italic; font-size:0.9rem; color:rgba(245,242,236,0.35); line-height:1.8;">"We're not inventing new physics. We're applying proven technology to a problem it was never used for."</div>
       </div>
     </div>
@@ -652,7 +652,7 @@
   <div class="slide" id="s12canvas" data-name="STRATEGY CANVAS">
     <div class="canvas-inner">
       <div class="canvas-title">Strategy Canvas (Blue Ocean Strategy)</div>
-      <div class="canvas-subtitle">Value curve: Pulse vs. existing alternatives across key competing factors</div>
+      <div class="canvas-subtitle">Value curve: NextDrop vs. existing alternatives across key competing factors</div>
       <div class="canvas-chart">
         <div class="canvas-y-axis">
           <div class="canvas-y-label">High</div>
@@ -703,7 +703,7 @@
       <div class="canvas-legend">
         <div class="legend-item"><div class="legend-line" style="background:rgba(245,242,236,0.3);"></div><span style="color:rgba(245,242,236,0.3)">Industrial Scales</span></div>
         <div class="legend-item"><div class="legend-line" style="background:rgba(255,184,0,0.6);"></div><span style="color:rgba(255,184,0,0.6)">Smart Bottles</span></div>
-        <div class="legend-item"><div class="legend-line" style="background:var(--blue);"></div><span style="color:var(--blue)">Pulse</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:var(--blue);"></div><span style="color:var(--blue)">NextDrop</span></div>
       </div>
     </div>
   </div>
@@ -714,7 +714,7 @@
       <div class="bum-scale-wrap">
         <div class="bum-inner">
           <div class="bum-title">Buyer Utility Map (Blue Ocean Strategy)</div>
-          <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does Pulse remove blocks?</div>
+          <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does NextDrop remove blocks?</div>
           <div class="bum-grid">
             <!-- Header row -->
             <div class="bum-col-header corner"></div>
@@ -728,26 +728,26 @@
             <div class="bum-row-label">Customer Productivity</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ Pulse: real-time digital level + full usage history</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ NextDrop: real-time digital level + full usage history</strong></span></div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ Pulse: automated low-stock alerts sent to purchasing</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ NextDrop: automated low-stock alerts sent to purchasing</strong></span></div>
             <div class="bum-cell">–</div>
             <!-- Row 2: Simplicity -->
             <div class="bum-row-label">Simplicity</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ Pulse: glance at app, exact % shown instantly</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ NextDrop: glance at app, exact % shown instantly</strong></span></div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <!-- Row 3: Convenience -->
             <div class="bum-row-label">Convenience</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ Pulse: order online, set up in seconds</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ NextDrop: order online, set up in seconds</strong></span></div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ Pulse: one ring clips to any new bottle in seconds</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ NextDrop: one ring clips to any new bottle in seconds</strong></span></div>
             <!-- Row 4: Risk -->
             <div class="bum-row-label">Risk</div>
             <div class="bum-cell">–</div>
@@ -755,12 +755,12 @@
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ Pulse: reusable sensor never enters landfill</strong></span></div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ NextDrop: reusable sensor never enters landfill</strong></span></div>
             <!-- Row 5: Fun & Image -->
             <div class="bum-row-label">Fun & Image</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ Pulse: live dashboard proves precision management to stakeholders</strong></span></div>
+            <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ NextDrop: live dashboard proves precision management to stakeholders</strong></span></div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
@@ -768,14 +768,14 @@
             <div class="bum-row-label">Environmental</div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ Pulse: use every last drop, cuts waste to near zero</strong></span></div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ NextDrop: use every last drop, cuts waste to near zero</strong></span></div>
             <div class="bum-cell">–</div>
             <div class="bum-cell">–</div>
-            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ Pulse: zero electronics disposed, zero product residue wasted</strong></span></div>
+            <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ NextDrop: zero electronics disposed, zero product residue wasted</strong></span></div>
           </div>
           <div class="bum-legend">
-            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → Pulse solution shown in each cell</div>
-            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → Pulse eliminates entirely</div>
+            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → NextDrop solution shown in each cell</div>
+            <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → NextDrop eliminates entirely</div>
             <div class="bum-legend-item" style="color:rgba(245,242,236,0.2);font-style:italic;">All 36 cells examined and 8 meaningful blocks identified across hotels, facilities &amp; households</div>
           </div>
         </div>
@@ -839,7 +839,7 @@
           <div class="ttnc-tier-name">"Unexplored"<br>Noncustomers</div>
           <div class="ttnc-tier-who">CPG Brands like P&amp;G, Unilever, Colgate</div>
           <div class="ttnc-tier-divider"></div>
-          <div class="ttnc-tier-body">They have <em>never considered</em> being a customer of any inventory sensor because the category didn't exist. But Pulse generates real-time consumption data they've never had access to. This unlocks a brand-new market: last-mile product intelligence.</div>
+          <div class="ttnc-tier-body">They have <em>never considered</em> being a customer of any inventory sensor because the category didn't exist. But NextDrop generates real-time consumption data they've never had access to. This unlocks a brand-new market: last-mile product intelligence.</div>
           <div class="ttnc-tier-proof">
             <div class="ttnc-proof-icon">◎</div>
             <div><div class="ttnc-proof-num">$0</div><div class="ttnc-proof-label">consumption data CPG brands have today confirmed by ex-P&amp;G exec</div></div>
@@ -876,8 +876,8 @@
       <div class="s15-title">Why now?<br>Three forces converging.</div>
       <div class="why-now-forces">
         <div class="force-card"><div class="force-num">1</div><div class="force-icon"></div><div class="force-title">SENSOR COST CROSSED $1</div><div class="force-desc">MEMS sensors just dropped below <strong>$1 for the first time in history</strong>. This product was physically impossible 5 years ago. The window just opened.</div><div class="force-tag">First time ever</div></div>
-        <div class="force-card"><div class="force-num">2</div><div class="force-icon"></div><div class="force-title">ESG MANDATES NOW LAW</div><div class="force-desc">EU + California regulations now require waste reporting for public companies. <strong>Compliance creates demand.</strong> Pulse is the data infrastructure.</div><div class="force-tag">Mandatory reporting</div></div>
-        <div class="force-card"><div class="force-num">3</div><div class="force-icon"></div><div class="force-title">CPG'S LAST MILE BLIND SPOT</div><div class="force-desc">P&G, Unilever, Colgate have optimized every piece of their supply chain <strong>except what happens after purchase</strong>. That's Pulse's data layer.</div><div class="force-tag">$500B CPG market</div></div>
+        <div class="force-card"><div class="force-num">2</div><div class="force-icon"></div><div class="force-title">ESG MANDATES NOW LAW</div><div class="force-desc">EU + California regulations now require waste reporting for public companies. <strong>Compliance creates demand.</strong> NextDrop is the data infrastructure.</div><div class="force-tag">Mandatory reporting</div></div>
+        <div class="force-card"><div class="force-num">3</div><div class="force-icon"></div><div class="force-title">CPG'S LAST MILE BLIND SPOT</div><div class="force-desc">P&G, Unilever, Colgate have optimized every piece of their supply chain <strong>except what happens after purchase</strong>. That's NextDrop's data layer.</div><div class="force-tag">$500B CPG market</div></div>
       </div>
     </div>
   </div>
@@ -905,14 +905,14 @@
   </div>
 
   <!-- SLIDE 17: THE CLOSE -->
-  <div class="slide" id="s17" data-name="PULSE">
+  <div class="slide" id="s17" data-name="NextDrop">
     <div class="s17-inner">
       <div class="earth-zoom"></div>
-      <div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-ring"></div>
+      <div class="NextDrop-ring"></div><div class="NextDrop-ring"></div><div class="NextDrop-ring"></div>
       <div class="s17-sup">THE INVISIBLE MADE VISIBLE</div>
       <div class="s17-main">200M TONS<br><span class="strike">INVISIBLE</span><br><span class="visible">VISIBLE</span></div>
       <div class="s17-tagline">Not by reinventing the bottle, but<br>by making the invisible, <em>visible</em>.</div>
-      <div class="s17-brand">PULSE</div>
+      <div class="s17-brand">NextDrop</div>
     </div>
   </div>
 
@@ -968,7 +968,7 @@
     }
     if (idx === 4) {
       document.querySelectorAll('#s5 .q-line').forEach(q => { q.classList.remove('revealed'); setTimeout(() => q.classList.add('revealed'), parseInt(q.dataset.delay) + 100); });
-      setTimeout(() => document.getElementById('pulse-reveal').classList.add('revealed'), 1200);
+      setTimeout(() => document.getElementById('NextDrop-reveal').classList.add('revealed'), 1200);
     }
   }
 
