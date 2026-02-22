@@ -212,6 +212,40 @@
   .errc-item { font-size: 0.8rem; color: rgba(245,242,236,0.5); margin: 0.4rem 0; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; }
   .errc-item::before { content: '→'; color: rgba(245,242,236,0.2); font-size: 0.7rem; }
 
+  /* ===== STRATEGY CANVAS ===== */
+  #s12canvas { background: #040408; }
+  .canvas-inner { width: 92%; max-width: 1000px; }
+  .canvas-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .canvas-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1.5rem; }
+  .canvas-chart { width: 100%; position: relative; }
+  .canvas-y-axis { position: absolute; left: 0; top: 0; bottom: 40px; width: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-right: 8px; }
+  .canvas-y-label { font-size: 0.5rem; color: rgba(245,242,236,0.2); letter-spacing: 0.1em; text-transform: uppercase; }
+  .canvas-plot { margin-left: 48px; border-bottom: 1px solid rgba(245,242,236,0.1); border-left: 1px solid rgba(245,242,236,0.1); position: relative; height: 280px; }
+  .canvas-grid-line { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(245,242,236,0.04); }
+  .canvas-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .canvas-x-labels { margin-left: 48px; display: flex; justify-content: space-around; margin-top: 0.5rem; }
+  .canvas-x-label { font-size: 0.55rem; color: rgba(245,242,236,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; flex: 1; }
+  .canvas-legend { display: flex; gap: 2rem; margin-top: 1.5rem; margin-left: 48px; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .legend-line { width: 24px; height: 2px; }
+
+  /* ===== BUYER UTILITY MAP ===== */
+  #s13bum { background: #050508; }
+  .bum-inner { width: 92%; max-width: 1000px; }
+  .bum-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .bum-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1.5rem; }
+  .bum-grid { display: grid; grid-template-columns: 120px repeat(6, 1fr); gap: 0; border: 1px solid rgba(245,242,236,0.08); }
+  .bum-cell { padding: 0.7rem 0.6rem; border-right: 1px solid rgba(245,242,236,0.06); border-bottom: 1px solid rgba(245,242,236,0.06); font-size: 0.6rem; letter-spacing: 0.05em; color: rgba(245,242,236,0.3); text-align: center; transition: all 0.3s; }
+  .bum-cell:last-child { border-right: none; }
+  .bum-row-label { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,242,236,0.25); text-align: left; background: rgba(245,242,236,0.02); display: flex; align-items: center; }
+  .bum-col-header { font-family: var(--display); font-size: 0.9rem; letter-spacing: 0.08em; color: rgba(245,242,236,0.4); background: rgba(245,242,236,0.03); }
+  .bum-col-header.corner { background: transparent; }
+  .bum-cell.blocked { background: rgba(0,200,255,0.12); color: var(--blue); border-color: rgba(0,200,255,0.2); font-weight: 500; }
+  .bum-cell.blocked-red { background: rgba(255,58,58,0.1); color: var(--red); border-color: rgba(255,58,58,0.2); }
+  .bum-legend { display: flex; gap: 2rem; margin-top: 1rem; }
+  .bum-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,242,236,0.3); }
+  .bum-legend-dot { width: 10px; height: 10px; }
+
   /* ===== S13: THREE TIERS OF NONCUSTOMERS ===== */
   #s13 { background: #04060a; }
   .ttnc-outer { width: 92%; max-width: 1100px; display: flex; flex-direction: column; gap: 1.5rem; }
@@ -426,7 +460,7 @@
         <div class="q-line" data-delay="600" style="margin-top:1rem;">WHAT IF IT WAS</div>
         <div class="q-line" data-delay="900"><span class="hl">REUSABLE?</span></div>
       </div>
-      <div class="s5-answer revealed" id="s5-answer">one piece of hardware | infinite bottles | zero waste</div>
+      <div class="s5-answer revealed" id="s5-answer">one piece of hardware  infinite bottles  zero waste</div>
       <div class="pulse-reveal" id="pulse-reveal">PULSE</div>
     </div>
   </div>
@@ -586,7 +620,7 @@
         <div class="life-arrow">→</div>
         <div class="life-step">
           <div class="life-icon"><svg viewBox="0 0 80 120" fill="none" width="80" height="120"><path d="M15 20 Q10 35 10 50 L10 110 Q10 118 20 118 L60 118 Q70 118 70 110 L70 50 Q70 35 65 20 Z" fill="rgba(245,242,236,0.02)" stroke="rgba(245,242,236,0.1)" stroke-width="1"/><ellipse cx="40" cy="118" rx="30" ry="5" fill="none" stroke="rgba(255,58,58,0.6)" stroke-width="2"/><text x="40" y="75" text-anchor="middle" fill="rgba(255,58,58,0.4)" font-size="9" font-family="DM Mono">EMPTY</text></svg></div>
-          <div class="life-label">bottle empty — pop ring</div>
+          <div class="life-label">bottle empty | pop ring</div>
         </div>
         <div class="life-arrow">→</div>
         <div class="life-step">
@@ -602,7 +636,144 @@
     </div>
   </div>
 
-  <!-- SLIDE 12: ERRC GRID -->
+  <!-- SLIDE 12: STRATEGY CANVAS -->
+  <div class="slide" id="s12canvas" data-name="STRATEGY CANVAS">
+    <div class="canvas-inner">
+      <div class="canvas-title">Strategy Canvas (Blue Ocean Strategy)</div>
+      <div class="canvas-subtitle">Value curve: Pulse vs. existing alternatives across key competing factors</div>
+      <div class="canvas-chart">
+        <div class="canvas-y-axis">
+          <div class="canvas-y-label">High</div>
+          <div class="canvas-y-label">Mid</div>
+          <div class="canvas-y-label">Low</div>
+        </div>
+        <div class="canvas-plot">
+          <div class="canvas-grid-line" style="top:25%"></div>
+          <div class="canvas-grid-line" style="top:50%"></div>
+          <div class="canvas-grid-line" style="top:75%"></div>
+          <svg class="canvas-svg" viewBox="0 0 700 280" preserveAspectRatio="none">
+            <!-- Industrial Scales: HIGH cost (expensive = high on cost axis), no universal fit, HIGH accuracy (only strength), no real-time data, mid reusability (machine lasts but immobile), no CPG insights, terrible setup -->
+            <polyline points="50,30 150,240 250,30 350,240 450,150 550,240 650,240" fill="none" stroke="rgba(245,242,236,0.25)" stroke-width="2" stroke-dasharray="6 3"/>
+            <!-- Smart Bottles: mid cost, LOW universal fit (proprietary only), mid accuracy, mid data (app but siloed), LOW reuse (sensor in landfill), LOW CPG insights, mid setup -->
+            <polyline points="50,150 150,240 250,120 350,150 450,240 550,240 650,150" fill="none" stroke="rgba(255,184,0,0.55)" stroke-width="2" stroke-dasharray="4 3"/>
+            <!-- PULSE: LOW cost ($14.99 reusable forever), HIGH universal fit, HIGH accuracy, HIGH real-time data, HIGH reuse (infinite), HIGH CPG insights, HIGH ease of setup -->
+            <polyline points="50,240 150,30 250,30 350,30 450,30 550,30 650,30" fill="none" stroke="var(--blue)" stroke-width="3"/>
+            <!-- Industrial dots -->
+            <circle cx="50" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="150" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="250" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="350" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="450" cy="150" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="550" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="650" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
+            <!-- Smart Bottle dots -->
+            <circle cx="50" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="150" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="250" cy="120" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="350" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="450" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="550" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="650" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
+            <!-- Pulse dots -->
+            <circle cx="50" cy="240" r="5" fill="var(--blue)"/>
+            <circle cx="150" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="250" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="350" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="450" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="550" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="650" cy="30" r="5" fill="var(--blue)"/>
+          </svg>
+        </div>
+        <div class="canvas-x-labels">
+          <div class="canvas-x-label">Cost</div>
+          <div class="canvas-x-label">Universal<br>fit</div>
+          <div class="canvas-x-label">Accuracy</div>
+          <div class="canvas-x-label">Real-time<br>data</div>
+          <div class="canvas-x-label">Reusability</div>
+          <div class="canvas-x-label">CPG<br>insights</div>
+          <div class="canvas-x-label">Ease of<br>setup</div>
+        </div>
+      </div>
+      <div class="canvas-legend">
+        <div class="legend-item"><div class="legend-line" style="background:rgba(245,242,236,0.3);"></div><span style="color:rgba(245,242,236,0.3)">Industrial Scales</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:rgba(255,184,0,0.6);"></div><span style="color:rgba(255,184,0,0.6)">Smart Bottles</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:var(--blue);"></div><span style="color:var(--blue)">Pulse</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: BUYER UTILITY MAP -->
+  <div class="slide" id="s13bum" data-name="BUYER UTILITY MAP">
+    <div class="bum-inner">
+      <div class="bum-title">Buyer Utility Map (Blue Ocean Strategy)</div>
+      <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does Pulse remove blocks?</div>
+      <div class="bum-grid">
+        <!-- Header row -->
+        <div class="bum-cell bum-col-header corner"></div>
+        <div class="bum-cell bum-col-header">PURCHASE</div>
+        <div class="bum-cell bum-col-header">DELIVERY</div>
+        <div class="bum-cell bum-col-header">USE</div>
+        <div class="bum-cell bum-col-header">SUPPLEMENTS</div>
+        <div class="bum-cell bum-col-header">MAINTENANCE</div>
+        <div class="bum-cell bum-col-header">DISPOSAL</div>
+        <!-- Row 1: Customer Productivity -->
+        <div class="bum-cell bum-row-label">Customer Productivity</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ Pulse: real-time digital level + full usage history</strong></span></div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ Pulse: automated low-stock alerts sent to purchasing</strong></span></div>
+        <div class="bum-cell">–</div>
+        <!-- Row 2: Simplicity -->
+        <div class="bum-cell bum-row-label">Simplicity</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ Pulse: glance at app, exact % shown instantly</strong></span></div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <!-- Row 3: Convenience -->
+        <div class="bum-cell bum-row-label">Convenience</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ Pulse: order online, set up in seconds</strong></span></div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ Pulse: one ring clips to any new bottle in seconds</strong></span></div>
+        <!-- Row 4: Risk -->
+        <div class="bum-cell bum-row-label">Risk</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ Pulse: reusable sensor never enters landfill</strong></span></div>
+        <!-- Row 5: Fun & Image -->
+        <div class="bum-cell bum-row-label">Fun & Image</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.48rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ Pulse: live dashboard proves precision management to stakeholders</strong></span></div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <!-- Row 6: Environmental -->
+        <div class="bum-cell bum-row-label">Environmental</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ Pulse: use every last drop, cuts waste to near zero</strong></span></div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell">–</div>
+        <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.48rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ Pulse: zero electronics disposed, zero product residue wasted</strong></span></div>
+      </div>
+      <div class="bum-legend">
+        <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → Pulse solution shown in each cell</div>
+        <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → Pulse eliminates entirely</div>
+        <div class="bum-legend-item" style="color:rgba(245,242,236,0.2);font-style:italic;">All 36 cells examined and 8 meaningful blocks identified across hotels, facilities &amp; households</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: ERRC GRID -->
   <div class="slide" id="s12" data-name="BLUE OCEAN / ERRC">
     <div class="s12-inner">
       <div class="s12-title">ERRC Grid (Blue Ocean Strategy)</div>
@@ -656,7 +827,7 @@
         <div class="ttnc-tier tier3">
           <div class="ttnc-tier-badge t3">TIER 3</div>
           <div class="ttnc-tier-name">"Unexplored"<br>Noncustomers</div>
-          <div class="ttnc-tier-who">CPG Brands — P&amp;G, Unilever, Colgate</div>
+          <div class="ttnc-tier-who">CPG Brands like P&amp;G, Unilever, Colgate</div>
           <div class="ttnc-tier-divider"></div>
           <div class="ttnc-tier-body">They have <em>never considered</em> being a customer of any inventory sensor because the category didn't exist. But Pulse generates real-time consumption data they've never had access to. This unlocks a brand-new market: last-mile product intelligence.</div>
           <div class="ttnc-tier-proof">
