@@ -18,13 +18,37 @@
   #deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
   .slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: none; }
   .slide.active { opacity: 1; pointer-events: all; }
-  #nav { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; align-items: center; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(245,242,236,0.25); cursor: pointer; transition: all 0.3s; }
-  .dot.active { background: var(--blue); width: 24px; border-radius: 3px; }
-  #arrow-left, #arrow-right { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border: 1px solid rgba(245,242,236,0.15); background: rgba(5,5,5,0.6); color: var(--white); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; transition: all 0.25s; backdrop-filter: blur(8px); }
-  #arrow-left { left: 1.5rem; } #arrow-right { right: 1.5rem; }
-  #arrow-left:hover, #arrow-right:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* Progress bar */
+  #progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--blue); box-shadow: 0 0 8px var(--blue); z-index: 200; transition: width 0.5s cubic-bezier(0.16,1,0.3,1); }
+
+  /* Slide timer bar — shows time remaining on current slide */
+  #timer-bar-track { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(245,242,236,0.06); z-index: 200; }
+  #timer-bar-fill { height: 100%; background: rgba(0,200,255,0.4); width: 100%; transform-origin: left; }
+
+  /* Controls overlay */
+  #controls { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1.5rem; z-index: 300; }
+  #play-pause-btn {
+    width: 40px; height: 40px; border: 1px solid rgba(0,200,255,0.4); background: rgba(5,5,5,0.8);
+    color: var(--blue); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px); transition: all 0.2s; border-radius: 2px;
+  }
+  #play-pause-btn:hover { border-color: var(--blue); background: rgba(0,200,255,0.1); }
+  #restart-btn {
+    width: 40px; height: 40px; border: 1px solid rgba(245,242,236,0.15); background: rgba(5,5,5,0.8);
+    color: rgba(245,242,236,0.4); font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px); transition: all 0.2s; border-radius: 2px; letter-spacing: 0.05em;
+  }
+  #restart-btn:hover { border-color: rgba(245,242,236,0.4); color: var(--white); }
+
+  /* Dot nav (no click needed, just shows position) */
+  #nav { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(245,242,236,0.2); transition: all 0.3s; }
+  .dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
+
   #slide-counter { position: fixed; top: 2rem; right: 2rem; font-family: var(--mono); font-size: 0.7rem; color: rgba(245,242,236,0.35); letter-spacing: 0.15em; z-index: 100; }
+  .slide-label { position: fixed; top: 2rem; left: 2rem; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(245,242,236,0.2); z-index: 100; font-family: var(--mono); }
+  .slide-label span { color: rgba(0,200,255,0.5); }
 
   /* S1 */ #s1 { background: var(--black); }
   .s1-inner { text-align: center; position: relative; }
@@ -201,19 +225,7 @@
   .s11-stat-num { font-family: var(--display); font-size: 3.5rem; color: var(--blue); }
   .s11-stat-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,242,236,0.35); margin-top: 0.3rem; }
 
-  /* S12 */ #s12 { background: #040408; }
-  .s12-inner { width: 90%; max-width: 900px; }
-  .s12-title { font-family: var(--display); font-size: clamp(2rem, 4vw, 3.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; }
-  .errc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid rgba(245,242,236,0.1); }
-  .errc-quad { padding: 2rem 2.5rem; border: 1px solid rgba(245,242,236,0.05); position: relative; min-height: 160px; }
-  .errc-quad:hover { background: rgba(245,242,236,0.02); }
-  .errc-header { font-family: var(--display); font-size: 2rem; letter-spacing: 0.1em; margin-bottom: 1rem; }
-  .errc-header.eliminate { color: var(--red); } .errc-header.raise { color: #00e676; } .errc-header.reduce { color: var(--amber); } .errc-header.create { color: var(--blue); }
-  .errc-item { font-size: 0.8rem; color: rgba(245,242,236,0.5); margin: 0.4rem 0; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; }
-  .errc-item::before { content: '→'; color: rgba(245,242,236,0.2); font-size: 0.7rem; }
-
-  /* ===== STRATEGY CANVAS ===== */
-  #s12canvas { background: #040408; }
+  /* S12canvas */ #s12canvas { background: #040408; }
   .canvas-inner { width: 92%; max-width: 1000px; }
   .canvas-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .canvas-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1.5rem; }
@@ -229,20 +241,9 @@
   .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
   .legend-line { width: 24px; height: 2px; }
 
-  /* ===== BUYER UTILITY MAP ===== */
-  #s13bum { background: #050508; }
-  #s13bum .slide-scaler {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  #s13bum .bum-scale-wrap {
-    transform: scale(0.8);
-    transform-origin: center center;
-    width: 125%; /* compensate for scale so content fills nicely */
-  }
+  /* S13bum */ #s13bum { background: #050508; }
+  #s13bum .slide-scaler { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  #s13bum .bum-scale-wrap { transform: scale(0.8); transform-origin: center center; width: 125%; }
   .bum-inner { width: 100%; max-width: 1200px; }
   .bum-title { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
   .bum-subtitle { font-size: 0.65rem; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; margin-bottom: 1rem; }
@@ -258,8 +259,18 @@
   .bum-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,242,236,0.3); }
   .bum-legend-dot { width: 10px; height: 10px; flex-shrink: 0; }
 
-  /* ===== S13: THREE TIERS OF NONCUSTOMERS ===== */
-  #s13 { background: #04060a; }
+  /* S12 ERRC */ #s12 { background: #040408; }
+  .s12-inner { width: 90%; max-width: 900px; }
+  .s12-title { font-family: var(--display); font-size: clamp(2rem, 4vw, 3.5rem); color: rgba(245,242,236,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; }
+  .errc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid rgba(245,242,236,0.1); }
+  .errc-quad { padding: 2rem 2.5rem; border: 1px solid rgba(245,242,236,0.05); position: relative; min-height: 160px; }
+  .errc-quad:hover { background: rgba(245,242,236,0.02); }
+  .errc-header { font-family: var(--display); font-size: 2rem; letter-spacing: 0.1em; margin-bottom: 1rem; }
+  .errc-header.eliminate { color: var(--red); } .errc-header.raise { color: #00e676; } .errc-header.reduce { color: var(--amber); } .errc-header.create { color: var(--blue); }
+  .errc-item { font-size: 0.8rem; color: rgba(245,242,236,0.5); margin: 0.4rem 0; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; }
+  .errc-item::before { content: '→'; color: rgba(245,242,236,0.2); font-size: 0.7rem; }
+
+  /* S13 TTNC */ #s13 { background: #04060a; }
   .ttnc-outer { width: 92%; max-width: 1100px; display: flex; flex-direction: column; gap: 1.5rem; }
   .ttnc-header-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
   .ttnc-framework-tag { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--blue); border: 1px solid rgba(0,200,255,0.3); display: inline-block; padding: 0.25rem 0.75rem; margin-bottom: 0.6rem; }
@@ -356,24 +367,20 @@
   .slide.active { clip-path: inset(0 0% 0 0); transition: clip-path 0.7s cubic-bezier(0.77,0,0.175,1); }
   .slide.exit { clip-path: inset(0 0% 0 100%); transition: clip-path 0.7s cubic-bezier(0.77,0,0.175,1); }
   body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 50; opacity: 0.5; }
-  .slide-label { position: fixed; top: 2rem; left: 2rem; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(245,242,236,0.2); z-index: 100; font-family: var(--mono); }
-  .slide-label span { color: rgba(0,200,255,0.5); }
-  #progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--blue); box-shadow: 0 0 8px var(--blue); z-index: 200; transition: width 0.5s cubic-bezier(0.16,1,0.3,1); }
 </style>
 </head>
 <body>
 
 <div id="cursor"></div>
 <div id="progress"></div>
-<div id="slide-label" class="slide-label">NextDrop / <span id="slide-name">INTRO</span></div>
-<div id="slide-counter">01 / 17</div>
-<button id="arrow-left">←</button>
-<button id="arrow-right">→</button>
+<div id="timer-bar-track"><div id="timer-bar-fill"></div></div>
+<div id="slide-label" class="slide-label">NextDrop / <span id="slide-name">THE INVISIBLE</span></div>
+<div id="slide-counter">01 / 19</div>
 
 <div id="deck">
 
-  <!-- SLIDE 1 -->
-  <div class="slide active" id="s1" data-name="THE INVISIBLE">
+  <!-- SLIDE 1: THE INVISIBLE :00–:12 -->
+  <div class="slide active" id="s1" data-name="THE INVISIBLE" data-duration="12">
     <div class="scan-line"></div>
     <div class="s1-inner">
       <div class="s1-bottle">
@@ -391,8 +398,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 2 -->
-  <div class="slide" id="s2" data-name="THE WASTE">
+  <!-- SLIDE 2: THE WASTE :12–:24 -->
+  <div class="slide" id="s2" data-name="THE WASTE" data-duration="12">
     <div class="s2-inner">
       <div class="shake-row">
         <div class="s2-bottle-wrap">
@@ -421,8 +428,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 3 -->
-  <div class="slide" id="s3" data-name="THE SCALE">
+  <!-- SLIDE 3: THE SCALE :24–:36 -->
+  <div class="slide" id="s3" data-name="THE SCALE" data-duration="12">
     <div class="s3-inner">
       <div class="stats-grid">
         <div class="stat-row" data-delay="0">
@@ -435,14 +442,14 @@
         </div>
         <div class="stat-row" data-delay="400">
           <div class="stat-number" style="color:var(--red)">20%</div>
-          <div class="stat-label">average waste per bottle<span class="stat-note">and it's not because we're careless. it's because we can't see inside</span></div>
+          <div class="stat-label">average waste per bottle<span class="stat-note">not because we're careless — because we can't see inside</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 4 -->
-  <div class="slide" id="s4" data-name="CURRENT SOLUTIONS">
+  <!-- SLIDE 4: CURRENT SOLUTIONS :36–:54 -->
+  <div class="slide" id="s4" data-name="CURRENT SOLUTIONS" data-duration="18">
     <div class="s4-inner">
       <div class="s4-title">existing solutions fail</div>
       <div class="compare-table">
@@ -463,8 +470,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 5 -->
-  <div class="slide" id="s5" data-name="THE IDEA">
+  <!-- SLIDE 5: THE IDEA :54–1:09 -->
+  <div class="slide" id="s5" data-name="THE IDEA" data-duration="15">
     <div class="s5-inner">
       <div class="question-block">
         <div class="q-line" data-delay="0">WHAT IF THE SENSOR WAS</div>
@@ -472,13 +479,13 @@
         <div class="q-line" data-delay="600" style="margin-top:1rem;">WHAT IF IT WAS</div>
         <div class="q-line" data-delay="900"><span class="hl">REUSABLE?</span></div>
       </div>
-      <div class="s5-answer revealed" id="s5-answer">one piece of hardware | infinite bottles | zero waste</div>
+      <div class="s5-answer revealed">one piece of hardware | infinite bottles | zero waste</div>
       <div class="NextDrop-reveal" id="NextDrop-reveal">NextDrop</div>
     </div>
   </div>
 
-  <!-- SLIDE 6 -->
-  <div class="slide" id="s6" data-name="THE PHYSICS">
+  <!-- SLIDE 6: THE PHYSICS 1:09–1:21 -->
+  <div class="slide" id="s6" data-name="THE PHYSICS" data-duration="12">
     <div class="s6-inner">
       <div class="s6-visual">
         <svg class="bottle-diagram" viewBox="0 0 280 400" fill="none">
@@ -504,13 +511,13 @@
           <div class="formula">P = ρgh</div>
           <div class="formula-label">pressure = density × gravity × height</div>
         </div>
-        <div class="s6-desc">The pressure at the bottom of any liquid column depends only on <strong>density, gravity, and height</strong>. Measure pressure → calculate volume. The bottle is irrelevant. A Coke bottle, bleach, industrial cleaner are bound by the <strong>same physics, every time</strong>.</div>
+        <div class="s6-desc">The pressure at the bottom of any liquid column depends only on <strong>density, gravity, and height</strong>. Measure pressure → calculate volume. The bottle is irrelevant. A Coke bottle, bleach, industrial cleaner — all bound by the <strong>same physics, every time</strong>.</div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 7 -->
-  <div class="slide" id="s7" data-name="THE SENSOR">
+  <!-- SLIDE 7: THE SENSOR 1:21–1:33 -->
+  <div class="slide" id="s7" data-name="THE SENSOR" data-duration="12">
     <div class="s7-inner">
       <div class="s7-left">
         <div class="s7-title">MEMS PRESSURE<br>SENSORS</div>
@@ -547,8 +554,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 8 -->
-  <div class="slide" id="s8" data-name="THE HARDWARE">
+  <!-- SLIDE 8: THE HARDWARE 1:33–1:45 -->
+  <div class="slide" id="s8" data-name="THE HARDWARE" data-duration="12">
     <div class="s8-inner">
       <div>
         <div class="ring-visual">
@@ -566,15 +573,15 @@
       </div>
       <div>
         <div class="s8-title">FLEXIBLE.<br>CHEMICAL-<br>RESISTANT.<br>REUSABLE.</div>
-        <div class="spec-item"><div class="spec-icon">⬡</div><div><div class="spec-title">Universal Fit</div><div class="spec-desc">Fits any bottle from 2" to 12" from dish soap to industrial cleaner</div></div></div>
+        <div class="spec-item"><div class="spec-icon">⬡</div><div><div class="spec-title">Universal Fit</div><div class="spec-desc">Fits any bottle from 2" to 12" — dish soap to industrial cleaner</div></div></div>
         <div class="spec-item"><div class="spec-icon">∞</div><div><div class="spec-title">Infinite Reuse</div><div class="spec-desc">Pop off empty bottle, click onto next one. One ring, years of use</div></div></div>
         <div class="spec-item"><div class="spec-icon">⊘</div><div><div class="spec-title">Zero E-Waste</div><div class="spec-desc">No electronics in landfills. The hardware outlasts any bottle</div></div></div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 9 -->
-  <div class="slide" id="s9" data-name="HOW IT WORKS">
+  <!-- SLIDE 9: HOW IT WORKS 1:45–1:57 -->
+  <div class="slide" id="s9" data-name="HOW IT WORKS" data-duration="12">
     <div class="s9-inner">
       <div class="s9-title">ONE SCAN. DONE.</div>
       <div class="phone-container">
@@ -604,8 +611,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 10 -->
-  <div class="slide" id="s10" data-name="VISIBILITY">
+  <!-- SLIDE 10: VISIBILITY 1:57–2:07 -->
+  <div class="slide" id="s10" data-name="VISIBILITY" data-duration="10">
     <div class="s10-inner">
       <div class="s10-title">REAL-TIME VISIBILITY</div>
       <div class="dashboard-grid">
@@ -620,8 +627,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 11 -->
-  <div class="slide" id="s11" data-name="ZERO WASTE">
+  <!-- SLIDE 11: ZERO WASTE 2:07–2:17 -->
+  <div class="slide" id="s11" data-name="ZERO WASTE" data-duration="10">
     <div class="s11-inner">
       <div class="s11-title">POP OFF.<br><span>CLICK ON.</span><br>REPEAT.</div>
       <div class="lifecycle-visual">
@@ -648,8 +655,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 12: STRATEGY CANVAS -->
-  <div class="slide" id="s12canvas" data-name="STRATEGY CANVAS">
+  <!-- SLIDE 12: STRATEGY CANVAS 2:17–2:35 -->
+  <div class="slide" id="s12canvas" data-name="STRATEGY CANVAS" data-duration="18">
     <div class="canvas-inner">
       <div class="canvas-title">Strategy Canvas (Blue Ocean Strategy)</div>
       <div class="canvas-subtitle">Value curve: NextDrop vs. existing alternatives across key competing factors</div>
@@ -667,37 +674,13 @@
             <polyline points="50,30 150,240 250,30 350,240 450,150 550,240 650,240" fill="none" stroke="rgba(245,242,236,0.25)" stroke-width="2" stroke-dasharray="6 3"/>
             <polyline points="50,150 150,240 250,120 350,150 450,240 550,240 650,150" fill="none" stroke="rgba(255,184,0,0.55)" stroke-width="2" stroke-dasharray="4 3"/>
             <polyline points="50,240 150,30 250,30 350,30 450,30 550,30 650,30" fill="none" stroke="var(--blue)" stroke-width="3"/>
-            <circle cx="50" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="150" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="250" cy="30" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="350" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="450" cy="150" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="550" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="650" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
-            <circle cx="50" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="150" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="250" cy="120" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="350" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="450" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="550" cy="240" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="650" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
-            <circle cx="50" cy="240" r="5" fill="var(--blue)"/>
-            <circle cx="150" cy="30" r="5" fill="var(--blue)"/>
-            <circle cx="250" cy="30" r="5" fill="var(--blue)"/>
-            <circle cx="350" cy="30" r="5" fill="var(--blue)"/>
-            <circle cx="450" cy="30" r="5" fill="var(--blue)"/>
-            <circle cx="550" cy="30" r="5" fill="var(--blue)"/>
-            <circle cx="650" cy="30" r="5" fill="var(--blue)"/>
+            <circle cx="50" cy="30" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="150" cy="240" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="250" cy="30" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="350" cy="240" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="450" cy="150" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="550" cy="240" r="4" fill="rgba(245,242,236,0.3)"/><circle cx="650" cy="240" r="4" fill="rgba(245,242,236,0.3)"/>
+            <circle cx="50" cy="150" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="150" cy="240" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="250" cy="120" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="350" cy="150" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="450" cy="240" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="550" cy="240" r="4" fill="rgba(255,184,0,0.7)"/><circle cx="650" cy="150" r="4" fill="rgba(255,184,0,0.7)"/>
+            <circle cx="50" cy="240" r="5" fill="var(--blue)"/><circle cx="150" cy="30" r="5" fill="var(--blue)"/><circle cx="250" cy="30" r="5" fill="var(--blue)"/><circle cx="350" cy="30" r="5" fill="var(--blue)"/><circle cx="450" cy="30" r="5" fill="var(--blue)"/><circle cx="550" cy="30" r="5" fill="var(--blue)"/><circle cx="650" cy="30" r="5" fill="var(--blue)"/>
           </svg>
         </div>
         <div class="canvas-x-labels">
-          <div class="canvas-x-label">Cost</div>
-          <div class="canvas-x-label">Universal<br>fit</div>
-          <div class="canvas-x-label">Accuracy</div>
-          <div class="canvas-x-label">Real-time<br>data</div>
-          <div class="canvas-x-label">Reusability</div>
-          <div class="canvas-x-label">CPG<br>insights</div>
-          <div class="canvas-x-label">Ease of<br>setup</div>
+          <div class="canvas-x-label">Cost</div><div class="canvas-x-label">Universal<br>fit</div><div class="canvas-x-label">Accuracy</div><div class="canvas-x-label">Real-time<br>data</div><div class="canvas-x-label">Reusability</div><div class="canvas-x-label">CPG<br>insights</div><div class="canvas-x-label">Ease of<br>setup</div>
         </div>
       </div>
       <div class="canvas-legend">
@@ -708,83 +691,54 @@
     </div>
   </div>
 
-  <!-- SLIDE 13: BUYER UTILITY MAP -->
-  <div class="slide" id="s13bum" data-name="BUYER UTILITY MAP">
+  <!-- SLIDE 13: BUYER UTILITY MAP 2:35–2:50 -->
+  <div class="slide" id="s13bum" data-name="BUYER UTILITY MAP" data-duration="15">
     <div class="slide-scaler">
       <div class="bum-scale-wrap">
         <div class="bum-inner">
           <div class="bum-title">Buyer Utility Map (Blue Ocean Strategy)</div>
           <div class="bum-subtitle">Where do existing solutions block buyer utility? Where does NextDrop remove blocks?</div>
           <div class="bum-grid">
-            <!-- Header row -->
             <div class="bum-col-header corner"></div>
-            <div class="bum-col-header">PURCHASE</div>
-            <div class="bum-col-header">DELIVERY</div>
-            <div class="bum-col-header">USE</div>
-            <div class="bum-col-header">SUPPLEMENTS</div>
-            <div class="bum-col-header">MAINTENANCE</div>
-            <div class="bum-col-header">DISPOSAL</div>
-            <!-- Row 1: Customer Productivity -->
+            <div class="bum-col-header">PURCHASE</div><div class="bum-col-header">DELIVERY</div><div class="bum-col-header">USE</div><div class="bum-col-header">SUPPLEMENTS</div><div class="bum-col-header">MAINTENANCE</div><div class="bum-col-header">DISPOSAL</div>
             <div class="bum-row-label">Customer Productivity</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Can't see remaining level → overuse, underuse, wasted product & staff time<br><strong style="color:#00e676">→ NextDrop: real-time digital level + full usage history</strong></span></div>
             <div class="bum-cell">–</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">No reorder signal → runout disrupts operations, emergency purchasing<br><strong style="color:#00e676">→ NextDrop: automated low-stock alerts sent to purchasing</strong></span></div>
             <div class="bum-cell">–</div>
-            <!-- Row 2: Simplicity -->
             <div class="bum-row-label">Simplicity</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Shake/tilt/guess ritual every single use are unreliable and fiddly<br><strong style="color:#00e676">→ NextDrop: glance at app, exact % shown instantly</strong></span></div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <!-- Row 3: Convenience -->
+            <div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-row-label">Convenience</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Industrial scales: long procurement, vendor quotes, weeks to deploy<br><strong style="color:#00e676">→ NextDrop: order online, set up in seconds</strong></span></div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Sensor embedded in bottle → must purchase entirely new smart bottle each time<br><strong style="color:#00e676">→ NextDrop: one ring clips to any new bottle in seconds</strong></span></div>
-            <!-- Row 4: Risk -->
             <div class="bum-row-label">Risk Reduction</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Electronics embedded in single-use bottle → guaranteed e-waste, landfill liability<br><strong style="color:#00e676">→ NextDrop: reusable sensor never enters landfill</strong></span></div>
-            <!-- Row 5: Fun & Image -->
             <div class="bum-row-label">Fun & Image</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked">● BLOCKED<br><span style="font-size:0.44rem">Guessing looks unprofessional, as facilities & hotels can't demonstrate operational control<br><strong style="color:#00e676">→ NextDrop: live dashboard proves precision management to stakeholders</strong></span></div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
-            <!-- Row 6: Environmental -->
+            <div class="bum-cell">–</div><div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-row-label">Environmental</div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">~20% unused product discarded per bottle → wasted materials, chemicals, packaging<br><strong style="color:#00e676">→ NextDrop: use every last drop, cuts waste to near zero</strong></span></div>
-            <div class="bum-cell">–</div>
-            <div class="bum-cell">–</div>
+            <div class="bum-cell">–</div><div class="bum-cell">–</div>
             <div class="bum-cell blocked-red">● BLOCKED<br><span style="font-size:0.44rem">Sensor + residue product in landfill → double environmental cost per disposal<br><strong style="color:#00e676">→ NextDrop: zero electronics disposed, zero product residue wasted</strong></span></div>
           </div>
           <div class="bum-legend">
             <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(0,200,255,0.5);"></div>Utility blocked by status quo → NextDrop solution shown in each cell</div>
             <div class="bum-legend-item"><div class="bum-legend-dot" style="background:rgba(255,58,58,0.5);"></div>Environmental / risk block → NextDrop eliminates entirely</div>
-            <div class="bum-legend-item" style="color:rgba(245,242,236,0.2);font-style:italic;">All 36 cells examined and 8 meaningful blocks identified across hotels, facilities &amp; households</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SLIDE 14: ERRC GRID -->
-  <div class="slide" id="s12" data-name="BLUE OCEAN / ERRC">
+  <!-- SLIDE 14: ERRC GRID 2:50–3:08 -->
+  <div class="slide" id="s12" data-name="ERRC GRID" data-duration="18">
     <div class="s12-inner">
       <div class="s12-title">ERRC Grid (Blue Ocean Strategy)</div>
       <div class="errc-grid">
@@ -796,8 +750,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 13: THREE TIERS OF NONCUSTOMERS -->
-  <div class="slide" id="s13" data-name="3 TIERS OF NONCUSTOMERS">
+  <!-- SLIDE 15: THREE TIERS 3:08–3:53 -->
+  <div class="slide" id="s13" data-name="3 TIERS OF NONCUSTOMERS" data-duration="45">
     <div class="ttnc-outer">
       <div class="ttnc-header-row">
         <div>
@@ -815,10 +769,10 @@
           <div class="ttnc-tier-name">"Soon-to-be"<br>Noncustomers</div>
           <div class="ttnc-tier-who">Households & Small Businesses</div>
           <div class="ttnc-tier-divider"></div>
-          <div class="ttnc-tier-body">They <em>want</em> to track bottle levels but no affordable tool exists. They currently guess, shake, tilt, and unfortunately waste 20% per bottle. They are on the edge of the market, ready to buy the moment a solution exists.</div>
+          <div class="ttnc-tier-body">They <em>want</em> to track bottle levels but no affordable tool exists. Reddit post showing the concept amassed 2,300 upvotes and 50 comments asking "where can I buy this?" — demand is real.</div>
           <div class="ttnc-tier-proof">
             <div class="ttnc-proof-icon">▲</div>
-            <div><div class="ttnc-proof-num">2,300</div><div class="ttnc-proof-label">Reddit upvotes + 50 comments asking "where can I buy this?"</div></div>
+            <div><div class="ttnc-proof-num">2,300</div><div class="ttnc-proof-label">upvotes + 50 comments asking "where can I buy this?"</div></div>
           </div>
           <div class="ttnc-tier-tag">CLOSEST = EASIEST TO CONVERT</div>
         </div>
@@ -827,22 +781,22 @@
           <div class="ttnc-tier-name">"Refusing"<br>Noncustomers</div>
           <div class="ttnc-tier-who">Hotels, Cleaning Services, Facilities</div>
           <div class="ttnc-tier-divider"></div>
-          <div class="ttnc-tier-body">They know the problem and have looked at industrial scales, but <em>refused</em> them because they cost $500+, only work in factories, and don't scale across rooms or sites. The current options don't work for them, so they do nothing.</div>
+          <div class="ttnc-tier-body">Looked at industrial scales and said no — $500+, factory-only, won't scale across rooms. Of 100 cold-emailed facility managers, <em>11 said let us know when it's ready.</em> Our math shows $11–13K annual savings per site.</div>
           <div class="ttnc-tier-proof">
             <div class="ttnc-proof-icon">$</div>
-            <div><div class="ttnc-proof-num">$12K</div><div class="ttnc-proof-label">annual savings per hotel, all validated by a real hotel manager</div></div>
+            <div><div class="ttnc-proof-num">$12K</div><div class="ttnc-proof-label">annual savings per hotel, validated by a real hotel manager</div></div>
           </div>
           <div class="ttnc-tier-tag">11 FACILITY MANAGERS READY TO PILOT</div>
         </div>
         <div class="ttnc-tier tier3">
           <div class="ttnc-tier-badge t3">TIER 3</div>
           <div class="ttnc-tier-name">"Unexplored"<br>Noncustomers</div>
-          <div class="ttnc-tier-who">CPG Brands like P&amp;G, Unilever, Colgate</div>
+          <div class="ttnc-tier-who">CPG Giants — P&amp;G, Unilever, Colgate</div>
           <div class="ttnc-tier-divider"></div>
-          <div class="ttnc-tier-body">They have <em>never considered</em> being a customer of any inventory sensor because the category didn't exist. But NextDrop generates real-time consumption data they've never had access to. This unlocks a brand-new market: last-mile product intelligence.</div>
+          <div class="ttnc-tier-body">P&G spends <em>$9B+ annually</em> on advertising with almost no granular data on real product usage after purchase. NextDrop turns that blind spot into precision — real consumption data they've never had access to.</div>
           <div class="ttnc-tier-proof">
             <div class="ttnc-proof-icon">◎</div>
-            <div><div class="ttnc-proof-num">$0</div><div class="ttnc-proof-label">consumption data CPG brands have today confirmed by ex-P&amp;G exec</div></div>
+            <div><div class="ttnc-proof-num">$0</div><div class="ttnc-proof-label">consumption data CPG brands have today — confirmed by ex-P&amp;G exec</div></div>
           </div>
           <div class="ttnc-tier-tag">FARTHEST : HIGHEST LONG-TERM VALUE</div>
         </div>
@@ -850,8 +804,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 14: UNIT ECONOMICS -->
-  <div class="slide" id="s14" data-name="UNIT ECONOMICS">
+  <!-- SLIDE 16: UNIT ECONOMICS 3:53–4:08 -->
+  <div class="slide" id="s14" data-name="UNIT ECONOMICS" data-duration="15">
     <div class="s14-inner">
       <div class="s14-title">UNIT ECONOMICS</div>
       <div class="unit-econ">
@@ -870,8 +824,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 15: WHY NOW -->
-  <div class="slide" id="s15" data-name="WHY NOW">
+  <!-- SLIDE 17: WHY NOW 4:08–4:23 -->
+  <div class="slide" id="s15" data-name="WHY NOW" data-duration="15">
     <div class="s15-inner">
       <div class="s15-title">Why now?<br>Three forces converging.</div>
       <div class="why-now-forces">
@@ -882,8 +836,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 16: ROADMAP -->
-  <div class="slide" id="s16" data-name="THE ROADMAP">
+  <!-- SLIDE 18: ROADMAP 4:23–4:35 -->
+  <div class="slide" id="s16" data-name="THE ROADMAP" data-duration="12">
     <div class="s16-inner">
       <div>
         <div class="s16-col-title now">TODAY WE HAVE</div>
@@ -904,8 +858,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 17: THE CLOSE -->
-  <div class="slide" id="s17" data-name="NextDrop">
+  <!-- SLIDE 19: THE CLOSE 4:35–5:00 -->
+  <div class="slide" id="s17" data-name="NextDrop" data-duration="25">
     <div class="s17-inner">
       <div class="earth-zoom"></div>
       <div class="NextDrop-ring"></div><div class="NextDrop-ring"></div><div class="NextDrop-ring"></div>
@@ -916,81 +870,236 @@
     </div>
   </div>
 
+</div><!-- end deck -->
+
+<!-- Bottom controls: play/pause, dots, restart -->
+<div id="controls">
+  <button id="restart-btn" title="Restart">↺</button>
+  <div id="nav"></div>
+  <button id="play-pause-btn" title="Play / Pause">⏸</button>
 </div>
 
-<div id="nav"></div>
-
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const nav = document.getElementById('nav');
-  const counter = document.getElementById('slide-counter');
-  const slideNameEl = document.getElementById('slide-name');
-  const progress = document.getElementById('progress');
-  let current = 0, isAnimating = false;
+  // ─── SLIDE DATA ───────────────────────────────────────────────────────────
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const totalSlides = slides.length;
+  let current = 0;
+  let isAnimating = false;
+  let isPaused = false;
+  let slideTimer = null;
+  let timerBarAnim = null;
+  let slideStartTime = null;
+  let remainingMs = null;
 
+  // ─── DOT NAV ──────────────────────────────────────────────────────────────
+  const nav = document.getElementById('nav');
   slides.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goTo(i));
     nav.appendChild(dot);
   });
+  const dots = Array.from(document.querySelectorAll('.dot'));
 
-  function updateDots() { document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current)); }
-  function updateCounter() {
-    counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+  // ─── COUNTER / PROGRESS ───────────────────────────────────────────────────
+  const counter = document.getElementById('slide-counter');
+  const slideNameEl = document.getElementById('slide-name');
+  const progressBar = document.getElementById('progress');
+  const timerFill = document.getElementById('timer-bar-fill');
+
+  function updateUI() {
+    counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(totalSlides).padStart(2,'0');
     slideNameEl.textContent = slides[current].dataset.name || '';
-    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    progressBar.style.width = ((current + 1) / totalSlides * 100) + '%';
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
   }
 
-  function goTo(idx) {
+  // ─── TIMER BAR ────────────────────────────────────────────────────────────
+  function startTimerBar(durationMs) {
+    timerFill.style.transition = 'none';
+    timerFill.style.width = '100%';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      timerFill.style.transition = `width ${durationMs}ms linear`;
+      timerFill.style.width = '0%';
+    }));
+  }
+
+  function pauseTimerBar() {
+    const computed = getComputedStyle(timerFill).width;
+    timerFill.style.transition = 'none';
+    timerFill.style.width = computed;
+  }
+
+  function resumeTimerBar(remainingMs) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      timerFill.style.transition = `width ${remainingMs}ms linear`;
+      timerFill.style.width = '0%';
+    }));
+  }
+
+  // ─── SLIDE ANIMATIONS ─────────────────────────────────────────────────────
+  function triggerSlideAnimations(idx) {
+    if (idx === 2) {
+      document.querySelectorAll('#s3 .stat-row').forEach(r => {
+        r.classList.remove('revealed');
+        setTimeout(() => r.classList.add('revealed'), parseInt(r.dataset.delay || 0) + 100);
+      });
+    }
+    if (idx === 4) {
+      document.querySelectorAll('#s5 .q-line').forEach(q => {
+        q.classList.remove('revealed');
+        setTimeout(() => q.classList.add('revealed'), parseInt(q.dataset.delay || 0) + 100);
+      });
+      const nr = document.getElementById('NextDrop-reveal');
+      if (nr) { nr.classList.remove('revealed'); setTimeout(() => nr.classList.add('revealed'), 1200); }
+    }
+  }
+
+  // ─── CORE TRANSITION ──────────────────────────────────────────────────────
+  function goTo(idx, fromTimer) {
     if (idx === current || isAnimating) return;
+    if (idx >= totalSlides) return; // don't go past end
     isAnimating = true;
-    const prev = slides[current], next = slides[idx], dir = idx > current ? 1 : -1;
-    prev.classList.add('exit'); prev.classList.remove('active');
+    clearSlideTimer();
+
+    const prev = slides[current];
+    const next = slides[idx];
+    const dir = idx > current ? 1 : -1;
+
+    prev.classList.add('exit');
+    prev.classList.remove('active');
     next.style.clipPath = dir > 0 ? 'inset(0 0% 0 100%)' : 'inset(0 100% 0 0%)';
-    next.style.opacity = '1'; next.style.pointerEvents = 'all';
+    next.style.opacity = '1';
+    next.style.pointerEvents = 'all';
+
     requestAnimationFrame(() => requestAnimationFrame(() => {
       next.style.transition = 'clip-path 0.75s cubic-bezier(0.77,0,0.175,1)';
       next.style.clipPath = 'inset(0 0% 0 0%)';
       prev.style.transition = 'clip-path 0.75s cubic-bezier(0.77,0,0.175,1)';
       prev.style.clipPath = dir > 0 ? 'inset(0 100% 0 0%)' : 'inset(0 0% 0 100%)';
     }));
+
     setTimeout(() => {
-      prev.classList.remove('exit'); prev.style.cssText = '';
-      next.style.transition = ''; next.classList.add('active');
-      current = idx; updateDots(); updateCounter(); triggerSlideAnimations(current); isAnimating = false;
+      prev.classList.remove('exit');
+      prev.style.cssText = '';
+      next.style.transition = '';
+      next.classList.add('active');
+      current = idx;
+      updateUI();
+      triggerSlideAnimations(current);
+      isAnimating = false;
+      if (!isPaused) scheduleNext();
     }, 780);
   }
 
-  function triggerSlideAnimations(idx) {
-    if (idx === 2) {
-      document.querySelectorAll('#s3 .stat-row').forEach(r => { r.classList.remove('revealed'); setTimeout(() => r.classList.add('revealed'), parseInt(r.dataset.delay) + 100); });
-    }
-    if (idx === 4) {
-      document.querySelectorAll('#s5 .q-line').forEach(q => { q.classList.remove('revealed'); setTimeout(() => q.classList.add('revealed'), parseInt(q.dataset.delay) + 100); });
-      setTimeout(() => document.getElementById('NextDrop-reveal').classList.add('revealed'), 1200);
-    }
+  // ─── AUTO-ADVANCE SCHEDULER ───────────────────────────────────────────────
+  function getDuration(idx) {
+    return (parseInt(slides[idx].dataset.duration) || 10) * 1000;
   }
 
-  updateDots(); updateCounter();
-  slides.forEach((s, i) => { s.style.clipPath = i === 0 ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)'; s.style.opacity = i === 0 ? '1' : '0'; });
+  function scheduleNext() {
+    clearSlideTimer();
+    if (isPaused) return;
+    if (current >= totalSlides - 1) return; // last slide — stop
 
-  document.getElementById('arrow-right').addEventListener('click', () => goTo(Math.min(current + 1, slides.length - 1)));
-  document.getElementById('arrow-left').addEventListener('click', () => goTo(Math.max(current - 1, 0)));
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === ' ') goTo(Math.min(current + 1, slides.length - 1));
-    if (e.key === 'ArrowLeft') goTo(Math.max(current - 1, 0));
+    const dur = remainingMs !== null ? remainingMs : getDuration(current);
+    remainingMs = null;
+
+    startTimerBar(dur);
+    slideStartTime = Date.now();
+
+    slideTimer = setTimeout(() => {
+      slideStartTime = null;
+      goTo(current + 1, true);
+    }, dur);
+  }
+
+  function clearSlideTimer() {
+    if (slideTimer) { clearTimeout(slideTimer); slideTimer = null; }
+  }
+
+  // ─── PLAY / PAUSE ─────────────────────────────────────────────────────────
+  const playPauseBtn = document.getElementById('play-pause-btn');
+
+  function pause() {
+    isPaused = true;
+    playPauseBtn.textContent = '▶';
+    if (slideStartTime !== null) {
+      const elapsed = Date.now() - slideStartTime;
+      const total = getDuration(current);
+      remainingMs = Math.max(0, total - elapsed);
+    }
+    clearSlideTimer();
+    pauseTimerBar();
+  }
+
+  function play() {
+    isPaused = false;
+    playPauseBtn.textContent = '⏸';
+    scheduleNext();
+    if (remainingMs !== null) resumeTimerBar(remainingMs);
+  }
+
+  playPauseBtn.addEventListener('click', () => {
+    if (isPaused) play(); else pause();
   });
 
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => { cursor.style.left = e.clientX - 6 + 'px'; cursor.style.top = e.clientY - 6 + 'px'; });
+  // ─── RESTART ──────────────────────────────────────────────────────────────
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    clearSlideTimer();
+    isPaused = false;
+    remainingMs = null;
+    slideStartTime = null;
+    playPauseBtn.textContent = '⏸';
 
+    // Reset all slides
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'exit');
+      s.style.cssText = '';
+      s.style.clipPath = 'inset(0 100% 0 0)';
+      s.style.opacity = '0';
+    });
+    slides[0].style.clipPath = 'inset(0 0% 0 0)';
+    slides[0].style.opacity = '1';
+    slides[0].classList.add('active');
+    current = 0;
+    updateUI();
+    triggerSlideAnimations(0);
+    scheduleNext();
+  });
+
+  // ─── KEYBOARD (spacebar = pause, arrows = manual jump) ───────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === ' ') { e.preventDefault(); if (isPaused) play(); else pause(); }
+    if (e.key === 'ArrowRight') { pause(); goTo(Math.min(current + 1, totalSlides - 1)); }
+    if (e.key === 'ArrowLeft')  { pause(); goTo(Math.max(current - 1, 0)); }
+  });
+
+  // ─── TOUCH SWIPE ──────────────────────────────────────────────────────────
   let touchStartX = 0;
-  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
   document.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) goTo(diff > 0 ? Math.min(current + 1, slides.length - 1) : Math.max(current - 1, 0));
+    if (Math.abs(diff) > 50) {
+      pause();
+      goTo(diff > 0 ? Math.min(current + 1, totalSlides - 1) : Math.max(current - 1, 0));
+    }
   });
+
+  // ─── CUSTOM CURSOR ────────────────────────────────────────────────────────
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 6 + 'px';
+    cursor.style.top  = e.clientY - 6 + 'px';
+  });
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  slides.forEach((s, i) => {
+    s.style.clipPath = i === 0 ? 'inset(0 0% 0 0)' : 'inset(0 100% 0 0)';
+    s.style.opacity  = i === 0 ? '1' : '0';
+  });
+  updateUI();
+  triggerSlideAnimations(0);
+  scheduleNext(); // start the clock
 </script>
 </body>
 </html>
