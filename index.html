@@ -26,26 +26,6 @@
   #timer-bar-track { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(245,242,236,0.06); z-index: 200; }
   #timer-bar-fill { height: 100%; background: rgba(0,200,255,0.4); width: 100%; transform-origin: left; }
 
-  /* Controls overlay */
-  #controls { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1.5rem; z-index: 300; }
-  #play-pause-btn {
-    width: 40px; height: 40px; border: 1px solid rgba(0,200,255,0.4); background: rgba(5,5,5,0.8);
-    color: var(--blue); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(8px); transition: all 0.2s; border-radius: 2px;
-  }
-  #play-pause-btn:hover { border-color: var(--blue); background: rgba(0,200,255,0.1); }
-  #restart-btn {
-    width: 40px; height: 40px; border: 1px solid rgba(245,242,236,0.15); background: rgba(5,5,5,0.8);
-    color: rgba(245,242,236,0.4); font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(8px); transition: all 0.2s; border-radius: 2px; letter-spacing: 0.05em;
-  }
-  #restart-btn:hover { border-color: rgba(245,242,236,0.4); color: var(--white); }
-
-  /* Dot nav (no click needed, just shows position) */
-  #nav { display: flex; gap: 6px; align-items: center; }
-  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(245,242,236,0.2); transition: all 0.3s; }
-  .dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
-
   #slide-counter { position: fixed; top: 2rem; right: 2rem; font-family: var(--mono); font-size: 0.7rem; color: rgba(245,242,236,0.35); letter-spacing: 0.15em; z-index: 100; }
   .slide-label { position: fixed; top: 2rem; left: 2rem; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(245,242,236,0.2); z-index: 100; font-family: var(--mono); }
   .slide-label span { color: rgba(0,200,255,0.5); }
@@ -872,13 +852,6 @@
 
 </div><!-- end deck -->
 
-<!-- Bottom controls: play/pause, dots, restart -->
-<div id="controls">
-  <button id="restart-btn" title="Restart">↺</button>
-  <div id="nav"></div>
-  <button id="play-pause-btn" title="Play / Pause">⏸</button>
-</div>
-
 <script>
   // ─── SLIDE DATA ───────────────────────────────────────────────────────────
   const slides = Array.from(document.querySelectorAll('.slide'));
@@ -891,15 +864,6 @@
   let slideStartTime = null;
   let remainingMs = null;
 
-  // ─── DOT NAV ──────────────────────────────────────────────────────────────
-  const nav = document.getElementById('nav');
-  slides.forEach((_, i) => {
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    nav.appendChild(dot);
-  });
-  const dots = Array.from(document.querySelectorAll('.dot'));
-
   // ─── COUNTER / PROGRESS ───────────────────────────────────────────────────
   const counter = document.getElementById('slide-counter');
   const slideNameEl = document.getElementById('slide-name');
@@ -910,7 +874,6 @@
     counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(totalSlides).padStart(2,'0');
     slideNameEl.textContent = slides[current].dataset.name || '';
     progressBar.style.width = ((current + 1) / totalSlides * 100) + '%';
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
   }
 
   // ─── TIMER BAR ────────────────────────────────────────────────────────────
@@ -957,7 +920,7 @@
   // ─── CORE TRANSITION ──────────────────────────────────────────────────────
   function goTo(idx, fromTimer) {
     if (idx === current || isAnimating) return;
-    if (idx >= totalSlides) return; // don't go past end
+    if (idx >= totalSlides) return;
     isAnimating = true;
     clearSlideTimer();
 
@@ -999,7 +962,7 @@
   function scheduleNext() {
     clearSlideTimer();
     if (isPaused) return;
-    if (current >= totalSlides - 1) return; // last slide — stop
+    if (current >= totalSlides - 1) return;
 
     const dur = remainingMs !== null ? remainingMs : getDuration(current);
     remainingMs = null;
@@ -1017,61 +980,27 @@
     if (slideTimer) { clearTimeout(slideTimer); slideTimer = null; }
   }
 
-  // ─── PLAY / PAUSE ─────────────────────────────────────────────────────────
-  const playPauseBtn = document.getElementById('play-pause-btn');
-
-  function pause() {
-    isPaused = true;
-    playPauseBtn.textContent = '▶';
-    if (slideStartTime !== null) {
-      const elapsed = Date.now() - slideStartTime;
-      const total = getDuration(current);
-      remainingMs = Math.max(0, total - elapsed);
-    }
-    clearSlideTimer();
-    pauseTimerBar();
-  }
-
-  function play() {
-    isPaused = false;
-    playPauseBtn.textContent = '⏸';
-    scheduleNext();
-    if (remainingMs !== null) resumeTimerBar(remainingMs);
-  }
-
-  playPauseBtn.addEventListener('click', () => {
-    if (isPaused) play(); else pause();
-  });
-
-  // ─── RESTART ──────────────────────────────────────────────────────────────
-  document.getElementById('restart-btn').addEventListener('click', () => {
-    clearSlideTimer();
-    isPaused = false;
-    remainingMs = null;
-    slideStartTime = null;
-    playPauseBtn.textContent = '⏸';
-
-    // Reset all slides
-    slides.forEach((s, i) => {
-      s.classList.remove('active', 'exit');
-      s.style.cssText = '';
-      s.style.clipPath = 'inset(0 100% 0 0)';
-      s.style.opacity = '0';
-    });
-    slides[0].style.clipPath = 'inset(0 0% 0 0)';
-    slides[0].style.opacity = '1';
-    slides[0].classList.add('active');
-    current = 0;
-    updateUI();
-    triggerSlideAnimations(0);
-    scheduleNext();
-  });
-
   // ─── KEYBOARD (spacebar = pause, arrows = manual jump) ───────────────────
   document.addEventListener('keydown', e => {
-    if (e.key === ' ') { e.preventDefault(); if (isPaused) play(); else pause(); }
-    if (e.key === 'ArrowRight') { pause(); goTo(Math.min(current + 1, totalSlides - 1)); }
-    if (e.key === 'ArrowLeft')  { pause(); goTo(Math.max(current - 1, 0)); }
+    if (e.key === ' ') {
+      e.preventDefault();
+      if (isPaused) {
+        isPaused = false;
+        scheduleNext();
+        if (remainingMs !== null) resumeTimerBar(remainingMs);
+      } else {
+        isPaused = true;
+        if (slideStartTime !== null) {
+          const elapsed = Date.now() - slideStartTime;
+          const total = getDuration(current);
+          remainingMs = Math.max(0, total - elapsed);
+        }
+        clearSlideTimer();
+        pauseTimerBar();
+      }
+    }
+    if (e.key === 'ArrowRight') { isPaused = true; clearSlideTimer(); pauseTimerBar(); goTo(Math.min(current + 1, totalSlides - 1)); }
+    if (e.key === 'ArrowLeft')  { isPaused = true; clearSlideTimer(); pauseTimerBar(); goTo(Math.max(current - 1, 0)); }
   });
 
   // ─── TOUCH SWIPE ──────────────────────────────────────────────────────────
@@ -1080,7 +1009,9 @@
   document.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) {
-      pause();
+      isPaused = true;
+      clearSlideTimer();
+      pauseTimerBar();
       goTo(diff > 0 ? Math.min(current + 1, totalSlides - 1) : Math.max(current - 1, 0));
     }
   });
@@ -1099,7 +1030,7 @@
   });
   updateUI();
   triggerSlideAnimations(0);
-  scheduleNext(); // start the clock
+  scheduleNext();
 </script>
 </body>
 </html>
